@@ -140,18 +140,22 @@ Discarded input sections
  .text          0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .data          0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .bss           0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .text._ZN3adc8toCountsEth
+                0x00000000       0x1a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .text._ZN3adc10fromCountsEth
+                0x00000000        0xe C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .text._ZN3adc6LogRowC2Ev
                 0x00000000       0x70 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_info    0x00000000     0x646f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_abbrev  0x00000000      0x603 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_loc     0x00000000       0x18 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_info    0x00000000     0x652c C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_abbrev  0x00000000      0x67a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_loc     0x00000000       0xf4 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .debug_aranges
-                0x00000000       0x20 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_ranges  0x00000000       0x30 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_line    0x00000000      0x7ba C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_str     0x00000000     0x4b1b C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+                0x00000000       0x30 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_ranges  0x00000000       0x40 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_line    0x00000000      0x7e3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_str     0x00000000     0x4b6e C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .comment       0x00000000       0x7f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_frame   0x00000000       0x2c C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+ .debug_frame   0x00000000       0x54 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .ARM.attributes
                 0x00000000       0x32 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
  .text          0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
@@ -1842,8 +1846,8 @@ SERCOM3_Handler                                   C:\Users\admin\AppData\Local\T
 SERCOM4_Handler                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
 SERCOM5_Handler                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
 SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
-SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
+SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
 SERCOM::acknowledgeUARTError()                    C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
 SERCOM::availableDataUART()                       C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
@@ -2218,6 +2222,8 @@ _vsniprintf_r                                     c:/users/admin/appdata/local/a
 _vsnprintf_r                                      c:/users/admin/appdata/local/arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-vsnprintf.o)
 adc::LogRow::LogRow()                             C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
 adc::LogRow::LogRow()                             C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+adc::fromCounts(unsigned short, unsigned char)    C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
+adc::toCounts(unsigned short, unsigned char)      C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
 analogRead                                        C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
 analogReadResolution                              C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
 analogReference                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
@@ -2225,8 +2231,8 @@ analogReference                                   C:\Users\admin\AppData\Local\T
 analogWrite                                       C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
 analogWriteResolution                             C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
 arduino::PluggableUSB_::PluggableUSB_()           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
-                                                  C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
 arduino::PluggableUSB_::PluggableUSB_()           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
+                                                  C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
 arduino::PluggableUSB_::getDescriptor(arduino::USBSetup&) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
 arduino::PluggableUSB_::getInterface(unsigned char*) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)

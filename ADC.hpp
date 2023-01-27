@@ -12,6 +12,7 @@
 #define ADC_TOFPD(num)           std::int32_t(double(ADC_FPD_FACTOR) * double(num))
 #define ADC_FROMFPD(num)         double(num) / double(ADC_FPD_FACTOR)
 
+
 // Temperature
 #define ADC_A_TEMP_SLOPE_MV_K 2.4
 #define ADC_B_TEMP_SLOPE_MV_K 2.16
@@ -47,6 +48,9 @@
 
 namespace adc
 {
+	std::uint16_t toCounts(std::uint16_t val, std::uint8_t resolution) noexcept;
+	std::uint16_t fromCounts(std::uint16_t val, std::uint8_t resolution) noexcept;
+
 	struct LogRow
 	{
 		std::uint64_t hotAdcVal     :12;
@@ -60,4 +64,28 @@ namespace adc
 
 		LogRow() noexcept;
 	};
+
+	enum class Gain : std::uint8_t
+	{
+		g0_5x,
+		g1x,
+		g2x,
+		g4x,
+		g8x,
+		g16x
+	};
+	enum class Channel : std::uint8_t
+	{
+		cOut,
+		cOutAmp,
+		cIntTemp
+	};
+
+	void init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples = 0) noexcept;
+
+	void startAdc() noexcept;
+	void stopAdc() noexcept;
+
+	void setGain(Gain gain) noexcept;
+	void sample(Channel channel) noexcept;
 }

@@ -1,5 +1,26 @@
 #include "ADC.hpp"
 
+std::uint16_t adc::toCounts(std::uint16_t val, std::uint8_t resolution) noexcept
+{
+	const auto resDelta = std::int8_t(resolution) - ADC_RESOLUTION_BITS;
+	if (!resDelta)
+	{
+		return val;
+	}
+	else if (resDelta < 0)
+	{
+		return (val >> (-resDelta));
+	}
+	else
+	{
+		return (val << resDelta);
+	}
+}
+std::uint16_t adc::fromCounts(std::uint16_t val, std::uint8_t resolution) noexcept
+{
+	return adc::toCounts(val, 2 * ADC_RESOLUTION_BITS - resolution);
+}
+
 adc::LogRow::LogRow()
 {
 	const auto regVal = ADC_CAL_LOG_ROW_READ();

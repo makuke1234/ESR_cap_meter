@@ -5,8 +5,9 @@ void setup()
 {
 	SerialUSB.begin(DEFAULT_BAUDRATE);
 	delay(10);
+	SerialUSB.println("Serial connection initialized.");
 
-	SerialUSB.println("Everthing initialized!");
+	SerialUSB.println("Initialization done!");
 }
 
 void loop()

@@ -25,8 +25,6 @@ void setup()
 
 	SerialUSB.print("Initializing display...");
 	disp::init();
-	disp::lcd.setCursor(0, 0);
-	disp::lcd.print("Press button...");
 	SerialUSB.println(" OK");
 
 	SerialUSB.print("Initializing ADC...");
@@ -69,6 +67,15 @@ void setup()
 	SerialUSB.print("Temperature: ");
 	SerialUSB.print(temp);
 	SerialUSB.println(" deg. C");
+
+	SerialUSB.print("Reference voltage: ");
+	SerialUSB.print(adc::calData.ref1VReal, 5);
+	SerialUSB.println("V");
+
+	disp::lcd.setCursor(0, 0);
+	disp::lcd.print("Ref: ");
+	disp::lcd.print(adc::calData.ref1VReal, 5);
+	disp::lcd.print("V");
 
 	disp::lcd.setCursor(0, 1);
 	disp::lcd.print("Temp: ");

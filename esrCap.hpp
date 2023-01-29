@@ -4,5 +4,11 @@
 
 namespace esr
 {
+	struct MeterCalData
+	{
 
+	};
+	extern MeterCalData calData;
+
+	
 }

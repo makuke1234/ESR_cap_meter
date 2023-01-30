@@ -133,7 +133,9 @@ namespace adc
 	{
 		Out,
 		OutAmp,
-		IntTemp
+		IntTemp,
+		Cal0,
+		CalRef
 	};
 
 	struct AdcCalData
@@ -142,7 +144,7 @@ namespace adc
 
 		float ref1VReal = 1.0f;
 		std::int32_t ref1VReal_FPD = ADC_TOFPD(1.0);
-		std::int32_t offsetCounts[6] = {};
+		std::int32_t offsetCounts_FPD[6] = { 13000, 13000, 13000, 13000, 13000 };
 
 		std::uint8_t gainIdx = std::uint8_t(Gain::g1x);
 		std::uint8_t gainSetting = 0;
@@ -173,9 +175,9 @@ namespace adc
 	  * @param time Sampling time value in the range of 0 ... 63
 	  */
 	void setSamplingTime(std::uint8_t time) noexcept;
-	std::uint16_t sample(Channel channel, bool preciseTemp = false) noexcept;
-	double getVolts(std::uint16_t sample) noexcept;
-	std::uint32_t getVolts_fpd(std::uint16_t sample) noexcept;
-	void calibrate(std::uint16_t tempSample) noexcept;
+	std::uint16_t sample(Channel channel, bool preciseTemp = false, bool diffMode = false) noexcept;
+	float getVolts(std::uint16_t sample) noexcept;
+	std::uint32_t getVolts_fpd(std::uint16_t sample, bool compensateOffset = true) noexcept;
+	void calibrate(std::uint16_t tempSample, bool fullCal = false) noexcept;
 	float getTemp(std::uint16_t tempSample) noexcept;
 }

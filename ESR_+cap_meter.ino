@@ -69,18 +69,8 @@ void setup()
 	SerialUSB.println(" deg. C");
 
 	SerialUSB.print("Reference voltage: ");
-	SerialUSB.print(adc::calData.ref1VReal, 5);
+	SerialUSB.print(adc::calData.ref1VReal, 6);
 	SerialUSB.println("V");
-
-	disp::lcd.setCursor(0, 0);
-	disp::lcd.print("Ref: ");
-	disp::lcd.print(adc::calData.ref1VReal, 5);
-	disp::lcd.print("V");
-
-	disp::lcd.setCursor(0, 1);
-	disp::lcd.print("Temp: ");
-	disp::lcd.print(temp, 2);
-	disp::lcd.print(" deg. C");
 
 
 	SerialUSB.println("Initialization done!");
@@ -119,17 +109,32 @@ void loop()
 			SerialUSB.print("; sample: ");
 			SerialUSB.print(tempSample);
 			SerialUSB.println();
+
+			
 		}
 
 		presses  += localPress == true;
 		releases += localPress == false;
 
-		disp::lcd.setCursor(9, 0);
-		disp::lcd.print(presses);
+		//disp::lcd.setCursor(9, 0);
+		//disp::lcd.print(presses);
 
-		disp::lcd.setCursor(10, 1);
-		disp::lcd.print(releases);
+		//disp::lcd.setCursor(10, 1);
+		//disp::lcd.print(releases);
 	}
+
+	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
+	adc::calibrate(tempSample, true);
+	const auto temp = adc::getTemp(tempSample);
+	disp::lcd.setCursor(0, 0);
+	disp::lcd.print("Ref: ");
+	disp::lcd.print(adc::calData.ref1VReal, 6);
+	disp::lcd.print("V");
+
+	disp::lcd.setCursor(0, 1);
+	disp::lcd.print("Temp: ");
+	disp::lcd.print(temp, 2);
+	disp::lcd.print(" deg. C");
 
 	SerialUSB.println("Testing...");
 

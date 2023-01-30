@@ -62,6 +62,17 @@ std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSam
 	// Select ADC reference
 	analogReference(ADC_REFERENCE);
 
+	uint32_t bias = (*((uint32_t *) ADC_FUSES_BIASCAL_ADDR) & ADC_FUSES_BIASCAL_Msk) >> ADC_FUSES_BIASCAL_Pos;
+	uint32_t linearity = (*((uint32_t *) ADC_FUSES_LINEARITY_0_ADDR) & ADC_FUSES_LINEARITY_0_Msk) >> ADC_FUSES_LINEARITY_0_Pos;
+	linearity |= ((*((uint32_t *) ADC_FUSES_LINEARITY_1_ADDR) & ADC_FUSES_LINEARITY_1_Msk) >> ADC_FUSES_LINEARITY_1_Pos) << 5;
+
+	/* Wait for bus synchronization. */
+	syncadc();
+
+	/* Write the calibration data. */
+	ADC->CALIB.reg = ADC_CALIB_BIAS_CAL(bias) | ADC_CALIB_LINEARITY_CAL(linearity);
+	syncadc();
+
 	// Configure ADC resolution
 	std::uint32_t initialRes;
 
@@ -242,7 +253,7 @@ std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSam
 		adc::setSamplingTime(63);
 		const auto tempSample = adc::sample(Channel::IntTemp, true);
 		adc::setSamplingTime(0);
-		adc::calibrate(tempSample);
+		adc::calibrate(tempSample, true);
 	}
 
 	return ret;
@@ -310,7 +321,7 @@ void adc::setSamplingTime(std::uint8_t time) noexcept
 	ADC->SAMPCTRL.reg = time;
 	syncadc();
 }
-std::uint16_t adc::sample(Channel channel, bool preciseTemp) noexcept
+std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noexcept
 {
 	preciseTemp &= (ADC_CLK_DIV == ADC_CTRLB_PRESCALER_DIV512);
 	const auto prescaler = ADC->CTRLB.bit.PRESCALER;
@@ -320,8 +331,13 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp) noexcept
 		ADC->CTRLB.bit.PRESCALER = ADC_CTRLB_PRESCALER_DIV512_Val;
 		syncadc();
 	}
+	if (ADC->CTRLB.bit.DIFFMODE != diffMode)
+	{
+		ADC->CTRLB.bit.DIFFMODE = diffMode;
+		syncadc();
+	}
 
-	std::uint8_t chPos;
+	std::uint8_t chPos, chNeg = 0x19;
 	switch (channel)
 	{
 	case Channel::Out:
@@ -333,14 +349,24 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp) noexcept
 	case Channel::IntTemp:
 		chPos = 0x18;
 		break;
+	case Channel::Cal0:
+		chPos = 0x00;
+		chNeg = 0x00;
+		break;
+	case Channel::CalRef:
+		chPos = 0x19;
+		break;
 	default:
 		assert(!"Invalid adc channel!");
 	}
 
 	ADC->INPUTCTRL.bit.MUXPOS = chPos;	// Select MUX channel
 	syncadc();
-	ADC->INPUTCTRL.bit.MUXNEG = (channel == Channel::IntTemp) ? 0x18 : 0x19;	// Select I/O ground as negative input, internal ground for temperature sensing
-	syncadc();
+	if (diffMode)
+	{
+		ADC->INPUTCTRL.bit.MUXNEG = (channel == Channel::IntTemp) ? 0x18 : chNeg;	// Select I/O ground as negative input, internal ground for temperature sensing
+		syncadc();
+	}
 	
 	// Select proper gain, temperature gain must be 1x
 	ADC->INPUTCTRL.bit.GAIN = (channel == Channel::IntTemp) ? 0x00 : adc::calData.gainSetting;
@@ -361,28 +387,49 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp) noexcept
 
 	return result;
 }
-double adc::getVolts(std::uint16_t sample) noexcept
+float adc::getVolts(std::uint16_t sample) noexcept
 {
-	return ADC_FROMFPD_D(adc::getVolts_fpd(sample));
+	return float(ADC_FROMFPD_D(adc::getVolts_fpd(sample)));
 }
-std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
+std::uint32_t adc::getVolts_fpd(std::uint16_t sample, bool compensateOffset) noexcept
 {
-	std::int32_t s = sample;
-	s += adc::calData.offsetCounts[adc::calData.gainIdx];
-	s = (s < 0) ? 0 : s;	// Clamp to zero
-
 	float maxCounts = float(ADC_MAX_COUNTS);
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
 	{
-		maxCounts *= adc::calData.gainCal[adc::calData.gainIdx];		
+		maxCounts *= adc::calData.gainCal[adc::calData.gainIdx];
 	}
 
-	std::uint32_t volts = std::uint32_t( ((adc::calData.ref1VReal * float(s)) * float(ADC_FPD_FACTOR)) / maxCounts + 0.5f);
+	std::uint32_t volts = ADC_TOFPD( ( adc::calData.ref1VReal * float(sample) ) / maxCounts );
+	if (compensateOffset)
+	{
+		volts -= adc::calData.offsetCounts_FPD[adc::calData.gainIdx];
+	}
 
 	return volts;
 }
-void adc::calibrate(std::uint16_t tempSample) noexcept
+void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 {
+	if (fullCal)
+	{
+		// Calibrate zero
+		const auto oldGain = adc::calData.gainIdx;
+
+		adc::setGain(Gain::g1x);
+		const auto zeroCounts = adc::sample(Channel::Cal0,   true, true);
+		const auto refCounts  = adc::sample(Channel::CalRef, true, true);
+
+		if (zeroCounts)
+		{
+			adc::calData.offsetCounts_FPD[std::uint8_t(Gain::g1x)] = adc::getVolts_fpd(zeroCounts, false);
+		}
+		else if (refCounts < ADC_MAX_COUNTS/2)
+		{
+			adc::calData.offsetCounts_FPD[std::uint8_t(Gain::g1x)] = (ADC_MAX_COUNTS/2) - std::int32_t(adc::getVolts_fpd(refCounts, false));
+		}
+
+		adc::setGain(Gain(oldGain));
+	}
+	
 	// Slightly modified code from Atmel application note AT11481: ADC Configurations with Examples
 
 	float INT1VM;	/* Voltage calculation for reality INT1V value during the ADC conversion */
@@ -398,5 +445,5 @@ void adc::calibrate(std::uint16_t tempSample) noexcept
 float adc::getTemp(std::uint16_t tempSample) noexcept
 {
 	const auto & lr = adc::calData.lr;
-	return lr.tempR + (((lr.tempH - lr.tempR)/(lr.VADCH - lr.VADCR)) * (adc::getVolts(tempSample) - lr.VADCR));;
+	return lr.tempR + (((lr.tempH - lr.tempR)/(lr.VADCH - lr.VADCR)) * (adc::getVolts(tempSample) - lr.VADCR));
 }

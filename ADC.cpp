@@ -2,6 +2,10 @@
 
 adc::AdcCalData adc::calData;
 
+static void syncgclk() noexcept
+{
+	while (GCLK->STATUS.bit.SYNCBUSY);
+}
 static void syncadc() noexcept
 {
 	while (ADC->STATUS.bit.SYNCBUSY);
@@ -58,6 +62,22 @@ adc::LogRow::LogRow()
 std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples) noexcept
 {
 	std::uint8_t ret = adcResolution;
+
+	// Set up ADC clock source
+
+	GCLK->GENCTRL.reg |=
+		GCLK_GENCTRL_ID(3) |	// Use GLK3, as it is already set up as 8 MHz internal OSC
+		GCLK_GENCTRL_GENEN;
+
+	syncgclk();
+
+	// Set ADC to use GCLK3 as 8 Mhz
+	GCLK->CLKCTRL.reg =
+		GCLK_CLKCTRL_ID_ADC |
+		GCLK_CLKCTRL_GEN_GCLK3 |
+		GCLK_CLKCTRL_CLKEN;
+
+	syncgclk();
 
 	// Select ADC reference
 	analogReference(AR_INTERNAL1V0);
@@ -334,12 +354,12 @@ static std::uint16_t s_sample() noexcept
 }
 std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noexcept
 {
-	preciseTemp &= (ADC_CLK_DIV != ADC_CTRLB_PRESCALER_DIV512);
+	preciseTemp &= (ADC_CLK_DIV != ADC_SLOW_CLK_DIV);
 	const auto prescaler = ADC->CTRLB.bit.PRESCALER;
 
 	if (preciseTemp)
 	{
-		ADC->CTRLB.bit.PRESCALER = ADC_CTRLB_PRESCALER_DIV512_Val;
+		ADC->CTRLB.bit.PRESCALER = ADC_SLOW_CLK_DIV >> ADC_CTRLB_PRESCALER_Pos;
 		syncadc();
 	}
 	if (ADC->CTRLB.bit.DIFFMODE != diffMode)
@@ -427,9 +447,9 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 		// Calibrate zero
 		const auto oldGain = adc::calData.gainIdx;
 
-		auto refMax    = adc::sample(Channel::IOSupply_1_4, true);
+		auto refMax    = adc::sample(Channel::IOSupply_1_4/*, true*/);
 		adc::setGain(Gain::g0_5x);
-		auto refCounts = adc::sample(Channel::IOSupply_1_4, true);
+		auto refCounts = adc::sample(Channel::IOSupply_1_4/*, true*/);
 
 		adc::calData.gainCal[std::uint8_t(Gain::g0_5x)] = float(refCounts) / float(refMax);
 

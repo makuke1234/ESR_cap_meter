@@ -39,10 +39,11 @@
 // USB serial printf binding buffer length
 #define SERIAL_PRINTF_BUFSIZE 128
 
-// ADC config
+// ADC config, ADC uses internal 8MHz OSC as clock source
 #define ADC_RESOLUTION_BITS      16
 #define ADC_OVERSAMPLING_SAMPLES 0
-#define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV32
+#define ADC_SLOW_CLK_DIV         ADC_CTRLB_PRESCALER_DIV8
+#define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV4
 
 
 // Function declarations

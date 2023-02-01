@@ -484,15 +484,10 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 	adc::calData.ref1VReal = INT1VM;
 	adc::calData.ref1VReal_FPD = fp::to(adc::calData.ref1VReal);
 }
-float adc::getTemp_fpd(std::uint16_t tempSample) noexcept
-{
-	const auto & lr = adc::calData.lr;
-	
-}
 float adc::getTemp(std::uint16_t tempSample) noexcept
 {
 	const auto & lr = adc::calData.lr;
-	return lr.tempR + (((lr.tempH - lr.tempR)/(lr.VADCH - lr.VADCR)) * (adc::getVolts(tempSample) - lr.VADCR));
+	return lr.tempR + ((lr.tempH - lr.tempR) * (adc::getVolts(tempSample) - lr.VADCR)/(lr.VADCH - lr.VADCR));
 }
 
 float adc::getSupply(bool preciseMeas) noexcept

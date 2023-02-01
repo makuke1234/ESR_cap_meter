@@ -45,6 +45,24 @@
 #define ADC_SLOW_CLK_DIV         ADC_CTRLB_PRESCALER_DIV64  // 125 kHz slow conversion ADC clock
 #define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV4   // 2 Mhz normal ADC clock
 
+// ESR meter specific hardware config
+#define ESR_11X_RDIV1 10000.0  // 10k
+#define ESR_11X_RDIV2 15000.0  // 15k
+
+#define ESR_AMP_GAIN           11.0  // Gain resistors 33k & 3.3k
+#define ESR_AMP_OFFSET         0.05  // Amplifier output voltage offset
+#define ESR_R_OUT              10.0  // 10 ohms
+#define ESR_CAP_BURDEN_VOLTAGE 0.3   // ESR & capacitance measuring burden voltage
+
+#define ESR_DETECTOR_RDIV1 3300.0               // 3.3k
+#define ESR_DETECTOR_RDIV2 (47000.0 + 10000.0)  // 47k + 10k
+
+#define ESR_DEFAULT_FREQUENCY  100000  // 100 kHz
+
+// Capacitance meter specific hardware config
+#define CAP_R_SERIES             1000.0  // 1k series resistor
+#define CAP_TIME_CONSTANT_COEF   1.0     // Difference to real time constant due to Schmitt triger action
+#define CAP_TIME_CONSTANT_OFFSET 10      // Capacitor RC time constant offset in timer ticks, due to delays in the microcontroller & comparator propagation delay
 
 // Function declarations
 void btnISR();

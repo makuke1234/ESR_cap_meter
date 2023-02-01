@@ -251,14 +251,16 @@ Discarded input sections
  .text          0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .data          0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .bss           0x00000000        0x0 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
+ .bss._ZN3cap7calDataE
+                0x00000000        0x1 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .bss._ZN3esr7calDataE
                 0x00000000        0x1 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
- .debug_info    0x00000000     0x6375 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
+ .debug_info    0x00000000     0x63a5 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .debug_abbrev  0x00000000      0x588 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .debug_aranges
                 0x00000000       0x18 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .debug_line    0x00000000      0x79c C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
- .debug_str     0x00000000     0x4aa3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
+ .debug_str     0x00000000     0x4ab4 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .comment       0x00000000       0x7f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
  .ARM.attributes
                 0x00000000       0x32 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
@@ -2341,30 +2343,30 @@ OUTPUT(C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC8330
  .comment       0x0000007e       0x7f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
  .comment       0x0000007e       0x7f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
 
-.debug_info     0x00000000    0x7275b
+.debug_info     0x00000000    0x7277e
  .debug_info    0x00000000     0xa698 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
- .debug_info    0x0000a698     0x80c4 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
- .debug_info    0x0001275c     0x645f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\display.cpp.o
- .debug_info    0x00018bbb     0x7730 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\libraries\LiquidCrystal\LiquidCrystal.cpp.o
- .debug_info    0x000202eb     0x782a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
- .debug_info    0x00027b15     0x72f7 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
- .debug_info    0x0002ee0c     0x9b17 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(CDC.cpp.o)
- .debug_info    0x00038923     0xdbf2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
- .debug_info    0x00046515     0x7f79 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
- .debug_info    0x0004e48e     0x2358 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(WInterrupts.c.o)
- .debug_info    0x000507e6      0x686 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
- .debug_info    0x00050e6c     0x41d3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Print.cpp.o)
- .debug_info    0x0005503f     0x10d2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
- .debug_info    0x00056111     0x1398 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(delay.c.o)
- .debug_info    0x000574a9       0x64 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(hooks.c.o)
- .debug_info    0x0005750d     0x5e20 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(main.cpp.o)
- .debug_info    0x0005d32d      0xf3b C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(new.cpp.o)
- .debug_info    0x0005e268     0x3494 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(startup.c.o)
- .debug_info    0x000616fc     0x2d60 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring.c.o)
- .debug_info    0x0006445c     0x4f29 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
- .debug_info    0x00069385     0x1833 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_digital.c.o)
- .debug_info    0x0006abb8     0x17bd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
- .debug_info    0x0006c375     0x63e6 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
+ .debug_info    0x0000a698     0x80e7 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
+ .debug_info    0x0001277f     0x645f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\display.cpp.o
+ .debug_info    0x00018bde     0x7730 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\libraries\LiquidCrystal\LiquidCrystal.cpp.o
+ .debug_info    0x0002030e     0x782a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
+ .debug_info    0x00027b38     0x72f7 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
+ .debug_info    0x0002ee2f     0x9b17 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(CDC.cpp.o)
+ .debug_info    0x00038946     0xdbf2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
+ .debug_info    0x00046538     0x7f79 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
+ .debug_info    0x0004e4b1     0x2358 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(WInterrupts.c.o)
+ .debug_info    0x00050809      0x686 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
+ .debug_info    0x00050e8f     0x41d3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Print.cpp.o)
+ .debug_info    0x00055062     0x10d2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
+ .debug_info    0x00056134     0x1398 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(delay.c.o)
+ .debug_info    0x000574cc       0x64 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(hooks.c.o)
+ .debug_info    0x00057530     0x5e20 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(main.cpp.o)
+ .debug_info    0x0005d350      0xf3b C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(new.cpp.o)
+ .debug_info    0x0005e28b     0x3494 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(startup.c.o)
+ .debug_info    0x0006171f     0x2d60 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring.c.o)
+ .debug_info    0x0006447f     0x4f29 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
+ .debug_info    0x000693a8     0x1833 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_digital.c.o)
+ .debug_info    0x0006abdb     0x17bd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
+ .debug_info    0x0006c398     0x63e6 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
 
 .debug_abbrev   0x00000000     0x8445
  .debug_abbrev  0x00000000      0xab8 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
@@ -2512,52 +2514,52 @@ OUTPUT(C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC8330
  .debug_line    0x0000abaa      0x593 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
  .debug_line    0x0000b13d      0x83b C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
 
-.debug_str      0x00000000     0xc58b
+.debug_str      0x00000000     0xc59c
  .debug_str     0x00000000     0x5aca C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ADC.cpp.o
                                0x69fd (size before relaxing)
- .debug_str     0x00005aca      0x324 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
-                               0x5b18 (size before relaxing)
- .debug_str     0x00005dee       0x9f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\display.cpp.o
+ .debug_str     0x00005aca      0x335 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
+                               0x5b29 (size before relaxing)
+ .debug_str     0x00005dff       0x9f C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\display.cpp.o
                                0x4b2d (size before relaxing)
- .debug_str     0x00005e8d      0x684 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\libraries\LiquidCrystal\LiquidCrystal.cpp.o
+ .debug_str     0x00005e9e      0x684 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\libraries\LiquidCrystal\LiquidCrystal.cpp.o
                                0x4ed7 (size before relaxing)
- .debug_str     0x00006511      0x904 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
+ .debug_str     0x00006522      0x904 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
                                0x4922 (size before relaxing)
- .debug_str     0x00006e15      0x3da C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
+ .debug_str     0x00006e26      0x3da C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
                                0x4c6b (size before relaxing)
- .debug_str     0x000071ef     0x2e0e C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(CDC.cpp.o)
+ .debug_str     0x00007200     0x2e0e C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(CDC.cpp.o)
                                0x7a90 (size before relaxing)
- .debug_str     0x00009ffd      0x965 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
+ .debug_str     0x0000a00e      0x965 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(USBCore.cpp.o)
                                0x8359 (size before relaxing)
- .debug_str     0x0000a962      0x616 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
+ .debug_str     0x0000a973      0x616 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
                                0x56de (size before relaxing)
- .debug_str     0x0000af78      0x4c2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(WInterrupts.c.o)
+ .debug_str     0x0000af89      0x4c2 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(WInterrupts.c.o)
                                0x150b (size before relaxing)
- .debug_str     0x0000b43a       0x80 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
+ .debug_str     0x0000b44b       0x80 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(PluggableUSB.cpp.o)
                                 0x632 (size before relaxing)
- .debug_str     0x0000b4ba      0x4bd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Print.cpp.o)
+ .debug_str     0x0000b4cb      0x4bd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Print.cpp.o)
                                0x1dce (size before relaxing)
- .debug_str     0x0000b977      0x3f3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
+ .debug_str     0x0000b988      0x3f3 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
                                 0xf7b (size before relaxing)
- .debug_str     0x0000bd6a       0xbd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(delay.c.o)
+ .debug_str     0x0000bd7b       0xbd C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(delay.c.o)
                                 0xea6 (size before relaxing)
- .debug_str     0x0000be27       0x7a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(hooks.c.o)
+ .debug_str     0x0000be38       0x7a C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(hooks.c.o)
                                 0x156 (size before relaxing)
- .debug_str     0x0000bea1       0xaf C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(main.cpp.o)
+ .debug_str     0x0000beb2       0xaf C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(main.cpp.o)
                                0x47f5 (size before relaxing)
- .debug_str     0x0000bf50       0x93 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(new.cpp.o)
+ .debug_str     0x0000bf61       0x93 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(new.cpp.o)
                                 0x7a7 (size before relaxing)
- .debug_str     0x0000bfe3       0xad C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(startup.c.o)
+ .debug_str     0x0000bff4       0xad C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(startup.c.o)
                                0x16b8 (size before relaxing)
- .debug_str     0x0000c090      0x133 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring.c.o)
+ .debug_str     0x0000c0a1      0x133 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring.c.o)
                                0x1783 (size before relaxing)
- .debug_str     0x0000c1c3      0x154 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
+ .debug_str     0x0000c1d4      0x154 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_analog.c.o)
                                0x1c02 (size before relaxing)
- .debug_str     0x0000c317       0x86 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_digital.c.o)
+ .debug_str     0x0000c328       0x86 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_digital.c.o)
                                 0xfe4 (size before relaxing)
- .debug_str     0x0000c39d       0x79 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
+ .debug_str     0x0000c3ae       0x79 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(wiring_private.c.o)
                                 0xf99 (size before relaxing)
- .debug_str     0x0000c416      0x175 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
+ .debug_str     0x0000c427      0x175 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
                                0x4a50 (size before relaxing)
 
 .debug_frame    0x00000000     0x2c1c
@@ -2746,8 +2748,8 @@ SERCOM3_Handler                                   C:\Users\admin\AppData\Local\T
 SERCOM4_Handler                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(cortex_handlers.c.o)
 SERCOM5_Handler                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
 SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
-SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
+SERCOM::SERCOM(Sercom*)                           C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
 SERCOM::acknowledgeUARTError()                    C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
 SERCOM::availableDataUART()                       C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(SERCOM.cpp.o)
@@ -2931,8 +2933,8 @@ USB_SetHandler                                    C:\Users\admin\AppData\Local\T
 Uart::IrqHandler()                                C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
 Uart::Uart(SERCOM*, unsigned char, unsigned char, SercomRXPad, SercomUartTXPad) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
-Uart::Uart(SERCOM*, unsigned char, unsigned char, SercomRXPad, SercomUartTXPad) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\core\variant.cpp.o
+Uart::Uart(SERCOM*, unsigned char, unsigned char, SercomRXPad, SercomUartTXPad) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
 Uart::Uart(SERCOM*, unsigned char, unsigned char, SercomRXPad, SercomUartTXPad, unsigned char, unsigned char) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
 Uart::Uart(SERCOM*, unsigned char, unsigned char, SercomRXPad, SercomUartTXPad, unsigned char, unsigned char) C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
 Uart::available()                                 C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Uart.cpp.o)
@@ -3406,6 +3408,7 @@ attachInterrupt                                   C:\Users\admin\AppData\Local\T
 btnISR()                                          C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\ESR_+cap_meter.ino.cpp.o
 cancelReset                                       C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(Reset.cpp.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(CDC.cpp.o)
+cap::calData                                      C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA\sketch\esrCap.cpp.o
 cleanup_glue                                      c:/users/admin/appdata/local/arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-reent.o)
 delay                                             C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(delay.c.o)
                                                   C:\Users\admin\AppData\Local\Temp\arduino-sketch-0C8FB6A5DAE47CB1E0CC833053CE34EA/..\arduino-core-cache\core_arduino_samd_arduino_zero_nativeg16_8955ed14b5308ce541648a9c34a5144e.a(main.cpp.o)

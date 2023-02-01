@@ -60,7 +60,7 @@ std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSam
 	std::uint8_t ret = adcResolution;
 
 	// Select ADC reference
-	analogReference(ADC_REFERENCE);
+	analogReference(AR_INTERNAL1V0);
 
 	uint32_t bias = (*((uint32_t *) ADC_FUSES_BIASCAL_ADDR) & ADC_FUSES_BIASCAL_Msk) >> ADC_FUSES_BIASCAL_Pos;
 	uint32_t linearity = (*((uint32_t *) ADC_FUSES_LINEARITY_0_ADDR) & ADC_FUSES_LINEARITY_0_Msk) >> ADC_FUSES_LINEARITY_0_Pos;

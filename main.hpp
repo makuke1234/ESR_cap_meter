@@ -42,8 +42,6 @@
 // ADC config
 #define ADC_RESOLUTION_BITS      16
 #define ADC_OVERSAMPLING_SAMPLES 0
-#define ADC_REFERENCE            AR_INTERNAL1V0
-#define ADC_REFERENCE_VOLTS      1.0
 #define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV32
 
 

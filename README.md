@@ -1,7 +1,7 @@
 # ESR_cap_meter
 
-This an ATSAMD2xx1xx based ESR and capacitance meter. Due to memory limitations,
-at least the 2xG16x chip is required (64 KB Flash, 8 KB RAM).
+This an ATSAMD21G16x based ESR and capacitance meter. Due to memory limitations,
+at least the *16* chip is required (64 KB Flash, 8 KB RAM).
 
 List of supported chips:
 * [x] ATSAMD21E16A

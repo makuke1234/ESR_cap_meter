@@ -90,7 +90,7 @@ void loop()
 		// Interrupt handling code
 	}
 
-	const auto tempSample = adc::sample(adc::Channel::IntTemp/*, true*/);
+	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 	adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
 	const auto supply = adc::getSupply();

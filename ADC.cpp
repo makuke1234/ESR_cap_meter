@@ -447,9 +447,9 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 		// Calibrate zero
 		const auto oldGain = adc::calData.gainIdx;
 
-		auto refMax    = adc::sample(Channel::IOSupply_1_4/*, true*/);
+		auto refMax    = adc::sample(Channel::IOSupply_1_4, true);
 		adc::setGain(Gain::g0_5x);
-		auto refCounts = adc::sample(Channel::IOSupply_1_4/*, true*/);
+		auto refCounts = adc::sample(Channel::IOSupply_1_4, true);
 
 		adc::calData.gainCal[std::uint8_t(Gain::g0_5x)] = float(refCounts) / float(refMax);
 

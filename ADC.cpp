@@ -254,6 +254,7 @@ std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSam
 		const auto tempSample = adc::sample(Channel::IntTemp, true);
 		adc::setSamplingTime(0);
 		adc::calibrate(tempSample, true);
+		adc::getSupply(true);
 	}
 
 	return ret;
@@ -321,9 +322,19 @@ void adc::setSamplingTime(std::uint8_t time) noexcept
 	ADC->SAMPCTRL.reg = time;
 	syncadc();
 }
+static std::uint16_t s_sample() noexcept
+{
+	ADC->SWTRIG.bit.START = 1;			// Initiate software trigger to start ADC conversion
+	syncadc();
+	while (!ADC->INTFLAG.bit.RESRDY);	// Wait for conversion
+	ADC->INTFLAG.bit.RESRDY = 1;		// Clear interrupt flag
+	syncadc();
+
+	return ADC->RESULT.reg;
+}
 std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noexcept
 {
-	preciseTemp &= (ADC_CLK_DIV == ADC_CTRLB_PRESCALER_DIV512);
+	preciseTemp &= (ADC_CLK_DIV != ADC_CTRLB_PRESCALER_DIV512);
 	const auto prescaler = ADC->CTRLB.bit.PRESCALER;
 
 	if (preciseTemp)
@@ -356,6 +367,13 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noex
 	case Channel::CalRef:
 		chPos = 0x19;
 		break;
+	case Channel::IOSupply_1_4:
+		chPos = 0x1B;
+		break;
+	case Channel::CoreSupply_1_4:
+		chPos = 0x1A;
+		chNeg = 0x18;
+		break;
 	default:
 		assert(!"Invalid adc channel!");
 	}
@@ -372,13 +390,12 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noex
 	ADC->INPUTCTRL.bit.GAIN = (channel == Channel::IntTemp) ? 0x00 : adc::calData.gainSetting;
 	syncadc();
 
-	ADC->SWTRIG.bit.START = 1;			// Initiate software trigger to start ADC conversion
-	syncadc();
-	while (!ADC->INTFLAG.bit.RESRDY);	// Wait for conversion
-	ADC->INTFLAG.bit.RESRDY = 1;		// Clear interrupt flag
-	syncadc();
+	if (preciseTemp)
+	{
+		s_sample();
+	}
 
-	const auto result = ADC->RESULT.reg;
+	const auto result = s_sample();
 	if (preciseTemp)
 	{
 		ADC->CTRLB.bit.PRESCALER = prescaler;
@@ -391,7 +408,7 @@ float adc::getVolts(std::uint16_t sample) noexcept
 {
 	return float(ADC_FROMFPD_D(adc::getVolts_fpd(sample)));
 }
-std::uint32_t adc::getVolts_fpd(std::uint16_t sample, bool compensateOffset) noexcept
+std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
 {
 	float maxCounts = float(ADC_MAX_COUNTS);
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
@@ -400,10 +417,6 @@ std::uint32_t adc::getVolts_fpd(std::uint16_t sample, bool compensateOffset) noe
 	}
 
 	std::uint32_t volts = ADC_TOFPD( ( adc::calData.ref1VReal * float(sample) ) / maxCounts );
-	if (compensateOffset)
-	{
-		volts -= adc::calData.offsetCounts_FPD[adc::calData.gainIdx];
-	}
 
 	return volts;
 }
@@ -414,18 +427,18 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 		// Calibrate zero
 		const auto oldGain = adc::calData.gainIdx;
 
-		adc::setGain(Gain::g1x);
-		const auto zeroCounts = adc::sample(Channel::Cal0,   true, true);
-		const auto refCounts  = adc::sample(Channel::CalRef, true, true);
+		auto refMax    = adc::sample(Channel::IOSupply_1_4, true);
+		adc::setGain(Gain::g0_5x);
+		auto refCounts = adc::sample(Channel::IOSupply_1_4, true);
 
-		if (zeroCounts)
-		{
-			adc::calData.offsetCounts_FPD[std::uint8_t(Gain::g1x)] = adc::getVolts_fpd(zeroCounts, false);
-		}
-		else if (refCounts < ADC_MAX_COUNTS/2)
-		{
-			adc::calData.offsetCounts_FPD[std::uint8_t(Gain::g1x)] = (ADC_MAX_COUNTS/2) - std::int32_t(adc::getVolts_fpd(refCounts, false));
-		}
+		adc::calData.gainCal[std::uint8_t(Gain::g0_5x)] = float(refCounts) / float(refMax);
+
+		adc::setGain(Gain::g1x);
+		refMax    = adc::sample(Channel::CoreSupply_1_4, true);
+		adc::setGain(Gain::g2x);
+		refCounts = adc::sample(Channel::CoreSupply_1_4, true);
+		
+		adc::calData.gainCal[std::uint8_t(Gain::g2x)] = float(refCounts) / float(refMax);
 
 		adc::setGain(Gain(oldGain));
 	}
@@ -446,4 +459,13 @@ float adc::getTemp(std::uint16_t tempSample) noexcept
 {
 	const auto & lr = adc::calData.lr;
 	return lr.tempR + (((lr.tempH - lr.tempR)/(lr.VADCH - lr.VADCR)) * (adc::getVolts(tempSample) - lr.VADCR));
+}
+
+float adc::getSupply(bool preciseMeas) noexcept
+{
+	const auto sample = adc::sample(Channel::IOSupply_1_4, preciseMeas);
+	adc::calData.supplyVoltage_FPD = 4U * adc::getVolts_fpd(sample);
+	adc::calData.supplyVoltage = ADC_FROMFPD_D(adc::calData.supplyVoltage_FPD);
+
+	return adc::calData.supplyVoltage;
 }

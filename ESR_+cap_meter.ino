@@ -86,46 +86,15 @@ void loop()
 
 		const bool localPress = s_btnState;
 		s_int = false;
-		setrgb(localPress, 0, 0);
-
-		if (!presses && !releases)
-		{
-			disp::lcd.clear();
-			disp::lcd.setCursor(0, 0);
-			disp::lcd.print("Presses:");
-			disp::lcd.setCursor(0, 1);
-			disp::lcd.print("Releases:");
-
 		
-		}
-		if (localPress)
-		{
-			const auto tempSample = adc::sample(adc::Channel::IntTemp);
-			const auto temp = adc::getTemp(tempSample);
-			SerialUSB.print("Temperature: ");
-			SerialUSB.print(temp);
-			SerialUSB.print(" deg. C; Voltage: ");
-			SerialUSB.print(adc::getVolts(tempSample), 4);
-			SerialUSB.print("; sample: ");
-			SerialUSB.print(tempSample);
-			SerialUSB.println();
-
-			
-		}
-
-		presses  += localPress == true;
-		releases += localPress == false;
-
-		//disp::lcd.setCursor(9, 0);
-		//disp::lcd.print(presses);
-
-		//disp::lcd.setCursor(10, 1);
-		//disp::lcd.print(releases);
+		// Interrupt handling code
 	}
 
 	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 	adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
+	const auto supply = adc::getSupply();
+
 	disp::lcd.setCursor(0, 0);
 	disp::lcd.print("Ref: ");
 	disp::lcd.print(adc::calData.ref1VReal, 6);
@@ -136,7 +105,15 @@ void loop()
 	disp::lcd.print(temp, 2);
 	disp::lcd.print(" deg. C");
 
-	SerialUSB.println("Testing...");
+	SerialUSB.print("Ref: ");
+	SerialUSB.print(adc::calData.ref1VReal, 6);
+	SerialUSB.print("V; Supply: ");
+	SerialUSB.print(supply, 4);
+	SerialUSB.print("V; Gain 0.5x: ");
+	SerialUSB.print(adc::calData.gainCal[std::uint8_t(adc::Gain::g0_5x)], 5);
+	SerialUSB.print("; Gain 2x: ");
+	SerialUSB.print(adc::calData.gainCal[std::uint8_t(adc::Gain::g2x)], 5);
+	SerialUSB.println("");
 
 	//setrgb(1, 1, 0);
 	while (!s_int && ((millis() - last) < 1000));

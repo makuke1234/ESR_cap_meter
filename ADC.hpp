@@ -135,7 +135,9 @@ namespace adc
 		OutAmp,
 		IntTemp,
 		Cal0,
-		CalRef
+		CalRef,
+		IOSupply_1_4,
+		CoreSupply_1_4
 	};
 
 	struct AdcCalData
@@ -143,12 +145,14 @@ namespace adc
 		adc::LogRow lr;
 
 		float ref1VReal = 1.0f;
-		std::int32_t ref1VReal_FPD = ADC_TOFPD(1.0);
-		std::int32_t offsetCounts_FPD[6] = { 13000, 13000, 13000, 13000, 13000 };
+		std::uint32_t ref1VReal_FPD = ADC_TOFPD(1.0);
 
 		std::uint8_t gainIdx = std::uint8_t(Gain::g1x);
 		std::uint8_t gainSetting = 0;
 		float gainCal[6] = { 0.5f, 1.0f, 2.0f, 4.0f, 8.0f, 16.0f };
+
+		float supplyVoltage = 3.3f;
+		std::uint32_t supplyVoltage_FPD = ADC_TOFPD(3.3);
 	};
 	extern AdcCalData calData;
 
@@ -177,7 +181,8 @@ namespace adc
 	void setSamplingTime(std::uint8_t time) noexcept;
 	std::uint16_t sample(Channel channel, bool preciseTemp = false, bool diffMode = false) noexcept;
 	float getVolts(std::uint16_t sample) noexcept;
-	std::uint32_t getVolts_fpd(std::uint16_t sample, bool compensateOffset = true) noexcept;
+	std::uint32_t getVolts_fpd(std::uint16_t sample) noexcept;
 	void calibrate(std::uint16_t tempSample, bool fullCal = false) noexcept;
 	float getTemp(std::uint16_t tempSample) noexcept;
+	float getSupply(bool preciseMeas = false) noexcept;
 }

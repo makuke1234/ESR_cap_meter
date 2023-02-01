@@ -10,6 +10,16 @@ static void syncadc() noexcept
 {
 	while (ADC->STATUS.bit.SYNCBUSY);
 }
+static std::uint16_t s_sample() noexcept
+{
+	ADC->SWTRIG.bit.START = 1;			// Initiate software trigger to start ADC conversion
+	syncadc();
+	while (!ADC->INTFLAG.bit.RESRDY);	// Wait for conversion
+	ADC->INTFLAG.bit.RESRDY = 1;		// Clear interrupt flag
+	syncadc();
+
+	return ADC->RESULT.reg;
+}
 
 std::uint16_t adc::toCounts(std::uint16_t val, std::uint8_t resolution) noexcept
 {
@@ -291,6 +301,9 @@ void adc::startAdc() noexcept
 	// Enable ADC
 	ADC->CTRLA.bit.ENABLE = 0x01;
 	syncadc();
+
+	// The first sample is rubbish anyway
+	s_sample();
 }
 void adc::stopAdc() noexcept
 {
@@ -341,16 +354,6 @@ void adc::setSamplingTime(std::uint8_t time) noexcept
 
 	ADC->SAMPCTRL.reg = time;
 	syncadc();
-}
-static std::uint16_t s_sample() noexcept
-{
-	ADC->SWTRIG.bit.START = 1;			// Initiate software trigger to start ADC conversion
-	syncadc();
-	while (!ADC->INTFLAG.bit.RESRDY);	// Wait for conversion
-	ADC->INTFLAG.bit.RESRDY = 1;		// Clear interrupt flag
-	syncadc();
-
-	return ADC->RESULT.reg;
 }
 std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noexcept
 {
@@ -426,17 +429,23 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noex
 }
 float adc::getVolts(std::uint16_t sample) noexcept
 {
-	return float(ADC_FROMFPD_D(adc::getVolts_fpd(sample)));
+	return float(fp::fromD(adc::getVolts_fpd(sample)));
 }
 std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
 {
-	float maxCounts = float(ADC_MAX_COUNTS);
+	/*float maxCounts = float(ADC_MAX_COUNTS);
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
 	{
 		maxCounts *= adc::calData.gainCal[adc::calData.gainIdx];
-	}
+	}*/
+	std::uint32_t maxCounts = ADC_MAX_COUNTS << 15;
+	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
+	{
+		std::uint32_t gainFPD = adc::calData.gainCal_FPD[adc::calData.gainIdx];
+		maxCounts = fp::mul(maxCounts, gainFPD);		
+	}	
 
-	std::uint32_t volts = ADC_TOFPD( ( adc::calData.ref1VReal * float(sample) ) / maxCounts );
+	std::uint32_t volts = fp::div(fp::mul(adc::calData.ref1VReal_FPD, sample << 15), maxCounts);
 
 	return volts;
 }
@@ -447,18 +456,18 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 		// Calibrate zero
 		const auto oldGain = adc::calData.gainIdx;
 
-		auto refMax    = adc::sample(Channel::IOSupply_1_4, true);
+		std::uint32_t refMax    = adc::sample(Channel::IOSupply_1_4, true);
 		adc::setGain(Gain::g0_5x);
-		auto refCounts = adc::sample(Channel::IOSupply_1_4, true);
+		std::uint32_t refCounts = adc::sample(Channel::IOSupply_1_4, true);
 
-		adc::calData.gainCal[std::uint8_t(Gain::g0_5x)] = float(refCounts) / float(refMax);
+		adc::calData.gainCal_FPD[std::uint8_t(Gain::g0_5x)] = fp::div(refCounts << 15U, refMax << 15U);
 
 		adc::setGain(Gain::g1x);
 		refMax    = adc::sample(Channel::CoreSupply_1_4, true);
 		adc::setGain(Gain::g2x);
 		refCounts = adc::sample(Channel::CoreSupply_1_4, true);
 		
-		adc::calData.gainCal[std::uint8_t(Gain::g2x)] = float(refCounts) / float(refMax);
+		adc::calData.gainCal_FPD[std::uint8_t(Gain::g2x)] = fp::div(refCounts << 15U, refMax << 15);
 
 		adc::setGain(Gain(oldGain));
 	}
@@ -473,7 +482,7 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 	INT1VM = lr.INT1VR + (((lr.INT1VH - lr.INT1VR) * (coarse_temp - lr.tempR)) / (lr.tempH - lr.tempR));
 	// Set new reference calibration value
 	adc::calData.ref1VReal = INT1VM;
-	adc::calData.ref1VReal_FPD = ADC_TOFPD(adc::calData.ref1VReal);
+	adc::calData.ref1VReal_FPD = fp::to(adc::calData.ref1VReal);
 }
 float adc::getTemp(std::uint16_t tempSample) noexcept
 {
@@ -485,7 +494,7 @@ float adc::getSupply(bool preciseMeas) noexcept
 {
 	const auto sample = adc::sample(Channel::IOSupply_1_4, preciseMeas);
 	adc::calData.supplyVoltage_FPD = 4U * adc::getVolts_fpd(sample);
-	adc::calData.supplyVoltage = ADC_FROMFPD_D(adc::calData.supplyVoltage_FPD);
+	adc::calData.supplyVoltage = fp::fromD(adc::calData.supplyVoltage_FPD);
 
 	return adc::calData.supplyVoltage;
 }

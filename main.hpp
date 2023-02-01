@@ -41,7 +41,7 @@
 
 // ADC config, ADC uses internal 8MHz OSC as clock source
 #define ADC_RESOLUTION_BITS      16
-#define ADC_OVERSAMPLING_SAMPLES 0
+#define ADC_OVERSAMPLING_SAMPLES 1024
 #define ADC_SLOW_CLK_DIV         ADC_CTRLB_PRESCALER_DIV64  // 125 kHz slow conversion ADC clock
 #define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV4   // 2 Mhz normal ADC clock
 

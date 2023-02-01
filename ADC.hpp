@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.hpp"
+#include "fpmath.hpp"
 
 #include <cstdint>
 #include <cassert>
@@ -9,24 +10,6 @@
 
 #define ADC_CALC_MAX_COUNTS(bits) ((1U << bits) - 1U)
 #define ADC_MAX_COUNTS            ADC_CALC_MAX_COUNTS(ADC_RESOLUTION_BITS)
-#define ADC_CALC_REFERENCE(gain)  (ADC_REFERENCE_VOLTS / gain)
-#define ADC_FPD_FACTOR            131072
-constexpr std::int32_t ADC_TOFPD(double num) noexcept
-{
-	return std::int32_t(double(ADC_FPD_FACTOR) * num);
-}
-constexpr std::int32_t ADC_TOFPD(std::int32_t num) noexcept
-{
-	return ADC_FPD_FACTOR * num;
-}
-constexpr double ADC_FROMFPD_D(std::int32_t num) noexcept
-{
-	return double(num) / double(ADC_FPD_FACTOR);
-}
-constexpr std::int32_t ADC_FROMFPD_I(std::int32_t num) noexcept
-{
-	return num / ADC_FPD_FACTOR;
-}
 
 /*
  * ADC pin definitions:
@@ -54,19 +37,10 @@ constexpr std::int32_t ADC_FROMFPD_I(std::int32_t num) noexcept
 #define A11 1
 
 // Temperature
-#define ADC_A_TEMP_SLOPE_MV_K    2.4
-#define ADC_B_TEMP_SLOPE_MV_K    2.16
-#define ADC_A_TEMP_SLOPE_V_K_FPD (ADC_TO_FPD(ADC_A_TEMP_SLOPE_MV_K) / 1000)
-#define ADC_B_TEMP_SLOPE_V_K_FPD (ADC_TO_FPD(ADC_B_TEMP_SLOPE_MV_K) / 1000)
-
-#define ADC_A_TEMP_V_25C     0.667
-#define ADC_B_TEMP_V_25C     0.688
-#define ADC_A_TEMP_V_25C_FPD ADC_TO_FPD(ADC_A_TEMP_V_25C)
-#define ADC_B_TEMP_V_25C_FPD ADC_TO_FPD(ADC_B_TEMP_V_25C)
+#define ADC_CAL_EXTRACT_IMPL_(value, shift, mask) ((shift ? (value >> shift) : value) & mask)
 
 #define ADC_CAL_LOG_ROW_ADDRESS      0x00806030
 #define ADC_CAL_LOG_ROW_READ(idx)    (reinterpret_cast<volatile std::uint32_t *>(ADC_CAL_LOG_ROW_ADDRESS)[idx])
-#define ADC_CAL_EXTRACT_IMPL_(value, shift, mask) ((shift ? (value >> shift) : value) & mask)
 #define ADC_CAL_EXTRACT(value, type) ADC_CAL_EXTRACT_IMPL_(value, type##_SHIFT, type##_MASK)
 
 #define ADC_CAL_ROOM_TEMP_VAL_INT_SHIFT 0
@@ -145,14 +119,21 @@ namespace adc
 		adc::LogRow lr;
 
 		float ref1VReal = 1.0f;
-		std::uint32_t ref1VReal_FPD = ADC_TOFPD(1.0);
+		std::uint32_t ref1VReal_FPD = fp::to(1.0);
 
 		std::uint8_t gainIdx = std::uint8_t(Gain::g1x);
 		std::uint8_t gainSetting = 0;
-		float gainCal[6] = { 0.5f, 1.0f, 2.0f, 4.0f, 8.0f, 16.0f };
+		float gainCal_FPD[6] = {
+			fp::to(0.5),
+			fp::to(1.0),
+			fp::to(2.0),
+			fp::to(4.0),
+			fp::to(8.0),
+			fp::to(16.0)
+		};
 
 		float supplyVoltage = 3.3f;
-		std::uint32_t supplyVoltage_FPD = ADC_TOFPD(3.3);
+		std::uint32_t supplyVoltage_FPD = fp::to(3.3);
 	};
 	extern AdcCalData calData;
 

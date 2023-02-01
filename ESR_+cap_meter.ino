@@ -88,6 +88,13 @@ void loop()
 		s_int = false;
 		
 		// Interrupt handling code
+		SerialUSB.println("ADC getVolts_fpd function output for ADC samples: ");
+		for (std::uint16_t i = 0; i < 255; ++i)
+		{
+			SerialUSB.print(i);
+			SerialUSB.print(": ");
+			SerialUSB.println(adc::getVolts_fpd(i));
+		}
 	}
 
 	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
@@ -109,11 +116,20 @@ void loop()
 	SerialUSB.print(adc::calData.ref1VReal, 6);
 	SerialUSB.print("V; Supply: ");
 	SerialUSB.print(supply, 4);
+	
 	SerialUSB.print("V; Gain 0.5x: ");
-	SerialUSB.print(adc::calData.gainCal[std::uint8_t(adc::Gain::g0_5x)], 5);
+	auto gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)];	
+	SerialUSB.print(fp::dec(gain));
+	SerialUSB.print('.');
+	SerialUSB.print(fp::frac(gain, 5).c_str());
+
 	SerialUSB.print("; Gain 2x: ");
-	SerialUSB.print(adc::calData.gainCal[std::uint8_t(adc::Gain::g2x)], 5);
-	SerialUSB.println("");
+	gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)];
+	SerialUSB.print(fp::dec(gain));
+	SerialUSB.print('.');
+	SerialUSB.print(fp::frac(gain, 5).c_str());
+	
+	SerialUSB.println();
 
 	//setrgb(1, 1, 0);
 	while (!s_int && ((millis() - last) < 1000));

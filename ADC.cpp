@@ -486,6 +486,7 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 }
 float adc::getTemp_fpd(std::uint16_t tempSample) noexcept
 {
+	const auto & lr = adc::calData.lr;
 	
 }
 float adc::getTemp(std::uint16_t tempSample) noexcept

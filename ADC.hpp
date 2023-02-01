@@ -123,7 +123,7 @@ namespace adc
 
 		std::uint8_t gainIdx = std::uint8_t(Gain::g1x);
 		std::uint8_t gainSetting = 0;
-		float gainCal_FPD[6] = {
+		std::uint32_t gainCal_FPD[6] = {
 			fp::to(0.5),
 			fp::to(1.0),
 			fp::to(2.0),

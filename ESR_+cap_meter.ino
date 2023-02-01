@@ -119,15 +119,11 @@ void loop()
 	
 	SerialUSB.print("V; Gain 0.5x: ");
 	auto gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)];	
-	SerialUSB.print(fp::dec(gain));
-	SerialUSB.print('.');
-	SerialUSB.print(fp::frac(gain, 5).c_str());
+	SerialUSB.print(fp::fromD(gain), 5);
 
 	SerialUSB.print("; Gain 2x: ");
 	gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)];
-	SerialUSB.print(fp::dec(gain));
-	SerialUSB.print('.');
-	SerialUSB.print(fp::frac(gain, 5).c_str());
+	SerialUSB.print(fp::fromD(gain), 5);
 	
 	SerialUSB.println();
 

@@ -164,6 +164,7 @@ namespace adc
 	float getVolts(std::uint16_t sample) noexcept;
 	std::uint32_t getVolts_fpd(std::uint16_t sample) noexcept;
 	void calibrate(std::uint16_t tempSample, bool fullCal = false) noexcept;
+	float getTemp_fpd(std::uint16_t tempSample) noexcept;
 	float getTemp(std::uint16_t tempSample) noexcept;
 	float getSupply(bool preciseMeas = false) noexcept;
 }

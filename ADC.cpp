@@ -375,7 +375,7 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noex
 	switch (channel)
 	{
 	case Channel::Out:
-		chPos = adc::pinToMux(ESR_OUT);
+		chPos = adc::pinToMux(CAP_OUT);
 		break;
 	case Channel::OutAmp:
 		chPos = adc::pinToMux(ESR_OUT_11X);
@@ -443,9 +443,9 @@ std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
 	{
 		std::uint32_t gainFPD = adc::calData.gainCal_FPD[adc::calData.gainIdx];
 		maxCounts = fp::mul(maxCounts, gainFPD);		
-	}	
+	}
 
-	std::uint32_t volts = fp::div(fp::mul(adc::calData.ref1VReal_FPD, sample << 15), maxCounts);
+	std::uint32_t volts = fp::muldiv(adc::calData.ref1VReal_FPD, sample << 15, maxCounts);
 
 	return volts;
 }

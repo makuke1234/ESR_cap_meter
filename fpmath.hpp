@@ -37,6 +37,10 @@ namespace fp
 	{
 		return std::int32_t((a * std::int64_t(FPD_FACTOR)) / std::int64_t(b));
 	}
+	constexpr std::int32_t muldiv(std::int32_t a, std::int32_t b, std::int32_t c) noexcept
+	{
+		return std::int32_t( (std::int64_t(a) * std::int64_t(b)) / std::int64_t(c) );
+	}
 
 	constexpr std::int32_t dec(std::int32_t fpd) noexcept
 	{

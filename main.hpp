@@ -12,14 +12,20 @@
 
 // Pin configuration
 
-#define ESR_OUT     A1  // 7
-#define ESR_OUT_11X A2  // 8
+#define CAP_OUT       A1  // 7
+#define CAP_RC_DETECT 1   // asdasd
+#define ESR_OUT_11X   A2  // 8
+
+#define ESR_PWM_OUT_LOW   1  // asd
+#define ESR_PWM_OUT_HIGH  1  // asd
+#define CAP_CHARGE_OUT    1  // asd
+#define CAP_DISCHARGE_OUT 1  // asd
 
 #define LED_RED    6  // 29
 #define LED_GREEN  7  // 30
 #define LED_BLUE  20  // 31
 
-#define PUSH_BTN 21  // 32
+#define PUSH_BTN  21  // 32
 #define BTN_DEBOUNCE_THRESHOLD_MS 30
 
 #define LCD_RS 4   // 13
@@ -60,11 +66,17 @@
 #define ESR_DEFAULT_FREQUENCY  100000  // 100 kHz
 
 // Capacitance meter specific hardware config
-#define CAP_R_SERIES             1000.0  // 1k series resistor
-#define CAP_TIME_CONSTANT_COEF   1.0     // Difference to real time constant due to Schmitt triger action
-#define CAP_TIME_CONSTANT_OFFSET 10      // Capacitor RC time constant offset in timer ticks, due to delays in the microcontroller & comparator propagation delay
+#define CAP_R_SERIES             1000.0    // 1k series resistor value
+#define CAP_TIME_CONSTANT_COEF   1.0       // Difference to real time constant due to Schmitt triger action
+#define CAP_TIME_CONSTANT_OFFSET 10        // Capacitor RC time constant offset in timer ticks, due to delays in the microcontroller & comparator propagation delay
+#define CAP_DISCHARGE_THRESHOLD  0.01      // Threshold, under which the capacitor is determined to be completely discharged
+#define CAP_TIMEOUT_TICKS        4800000U  // Threshold, over which the measurement will time out
 
 // Function declarations
 void btnISR();
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 int SerialPrintf(const char * format, ...);
+
+std::uint32_t getSampleInterfaceEsr(bool precisemode) noexcept;
+std::uint32_t getSampleInterfaceCap(bool precisemode) noexcept;
+void setGainInterface(std::uint8_t gain) noexcept;

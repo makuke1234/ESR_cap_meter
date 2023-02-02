@@ -72,6 +72,20 @@ void setup()
 	SerialUSB.print(adc::calData.ref1VReal, 6);
 	SerialUSB.println("V");
 
+	SerialUSB.print("Initializing ESR measurement...");
+	esr::init(
+		&getSampleInterfaceEsr,
+		&setGainInterface
+	);
+	SerialUSB.println(" OK");
+
+	SerialUSB.print("Initializing capacitance measurement...");
+	cap::init(
+		&getSampleInterfaceCap,
+		&setGainInterface
+	);
+	SerialUSB.println(" OK");
+
 
 	SerialUSB.println("Initialization done!");
 }
@@ -169,4 +183,17 @@ int SerialPrintf(const char * format, ...)
 
 	SerialUSB.print(buf);
 	return nchars;
+}
+
+std::uint32_t getSampleInterfaceEsr(bool precisemode) noexcept
+{
+	return adc::getVolts_fpd(adc::sample(adc::Channel::OutAmp, precisemode));
+}
+std::uint32_t getSampleInterfaceCap(bool precisemode) noexcept
+{
+	return adc::getVolts_fpd(adc::sample(adc::Channel::Out, precisemode));
+}
+void setGainInterface(std::uint8_t gain) noexcept
+{
+	adc::setGain(adc::Gain(gain));
 }

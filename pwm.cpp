@@ -13,22 +13,22 @@ void TCC0_Handler()
 		if (pwm::enabled[3]) OutSet(pwm::portPinNum[3]);
 		TCC0->INTFLAG.bit.OVF = 1;
 	}
-	if (TCC0->INTFLAG.bit.MC0)
+	else if (TCC0->INTFLAG.bit.MC0)
 	{
 		OutClr(pwm::portPinNum[0]);
 		TCC0->INTFLAG.bit.MC0 = 1;
 	}
-	if (TCC0->INTFLAG.bit.MC1)
+	else if (TCC0->INTFLAG.bit.MC1)
 	{
 		OutClr(pwm::portPinNum[1]);
 		TCC0->INTFLAG.bit.MC1 = 1;
 	}
-	if (TCC0->INTFLAG.bit.MC0)
+	else if (TCC0->INTFLAG.bit.MC2)
 	{
 		OutClr(pwm::portPinNum[2]);
 		TCC0->INTFLAG.bit.MC2 = 1;
 	}
-	if (TCC0->INTFLAG.bit.MC0)
+	else if (TCC0->INTFLAG.bit.MC3)
 	{
 		OutClr(pwm::portPinNum[3]);
 		TCC0->INTFLAG.bit.MC3 = 1;
@@ -87,12 +87,14 @@ void pwm::add(std::uint8_t idx, std::uint8_t pin, std::uint8_t defDuty)
 		TCC0->INTENSET.bit.MC3 = 1;
 		break;
 	}
-	pwm::enabled[idx] = 1;
+	pwm::enabled[idx] = defDuty != 0;
 }
 void pwm::duty(std::uint8_t idx, std::uint8_t duty)
 {
 	TCC0->CC[idx].reg = (TCC0->PER.reg * std::uint32_t(duty)) / 255U;
 	while (TCC0->SYNCBUSY.reg);
+
+	pwm::enabled[idx] = duty != 0;
 }
 void pwm::remove(std::uint8_t idx)
 {

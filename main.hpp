@@ -25,7 +25,7 @@
 #define LED_GREEN  7  // 30
 #define LED_BLUE  20  // 31
 
-#define LED_PWM_FREQUENCY 100  // LED PWM frequency
+#define LED_PWM_FREQUENCY 2000  // LED PWM frequency
 
 #define PUSH_BTN  21  // 32
 #define BTN_DEBOUNCE_THRESHOLD_MS 30

@@ -96,7 +96,7 @@ void setup()
 	);
 	SerialUSB.println(" OK");
 
-	setrgb(10, 100, 0);
+	setrgb(254, 100, 0);
 	SerialUSB.println("Initialization done!");
 }
 

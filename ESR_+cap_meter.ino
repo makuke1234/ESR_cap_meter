@@ -2,6 +2,7 @@
 #include "ADC.hpp"
 #include "display.hpp"
 #include "esrCap.hpp"
+#include "pwm.hpp"
 
 static bool s_int = false, s_btnState = false;
 
@@ -17,6 +18,14 @@ void setup()
 	pinMode(LED_BLUE,  OUTPUT);
 	SerialUSB.println(" OK");
 
+	SerialUSB.print("Initializing PWM controller...");
+	pwm::init(LED_PWM_FREQUENCY);
+	pwm::add(0, LED_RED);
+	pwm::add(1, LED_GREEN);
+	pwm::add(2, LED_BLUE);
+	SerialUSB.println(" OK");
+
+
 	SerialUSB.print("Initializing button...");
 	pinMode(PUSH_BTN, INPUT);
 	// Attach interrupt to the button
@@ -26,6 +35,7 @@ void setup()
 	SerialUSB.print("Initializing display...");
 	disp::init();
 	SerialUSB.println(" OK");
+
 
 	SerialUSB.print("Initializing ADC...");
 	const auto realres = adc::init(ADC_RESOLUTION_BITS, ADC_OVERSAMPLING_SAMPLES);
@@ -72,21 +82,21 @@ void setup()
 	SerialUSB.print(adc::calData.ref1VReal, 6);
 	SerialUSB.println("V");
 
-	SerialUSB.print("Initializing ESR measurement...");
+	SerialUSB.print("Initializing ESR measuring...");
 	esr::init(
 		&getSampleInterfaceEsr,
 		&setGainInterface
 	);
 	SerialUSB.println(" OK");
 
-	SerialUSB.print("Initializing capacitance measurement...");
+	SerialUSB.print("Initializing capacitance measuring...");
 	cap::init(
 		&getSampleInterfaceCap,
 		&setGainInterface
 	);
 	SerialUSB.println(" OK");
 
-
+	setrgb(10, 100, 0);
 	SerialUSB.println("Initialization done!");
 }
 
@@ -141,7 +151,6 @@ void loop()
 	
 	SerialUSB.println();
 
-	//setrgb(1, 1, 0);
 	while (!s_int && ((millis() - last) < 1000));
 	last = millis();
 }
@@ -166,9 +175,9 @@ void btnISR()
 
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b)
 {
-	digitalWrite(LED_RED,   r);
-	digitalWrite(LED_GREEN, g);
-	digitalWrite(LED_BLUE,  b);
+	pwm::duty(0, r);
+	pwm::duty(1, g);
+	pwm::duty(2, b);
 }
 
 int SerialPrintf(const char * format, ...)

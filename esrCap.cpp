@@ -48,17 +48,19 @@ void TC3_Handler()
 	static bool s_toggle = false;
 
 	TC3->COUNT16.COUNT.reg = 0;
+	constexpr auto realPwmLow  = ARDUINO_PIN_TO_PORT_PIN(ESR_PWM_OUT_LOW),
+	               realPwmHigh = ARDUINO_PIN_TO_PORT_PIN(ESR_PWM_OUT_HIGH);
 
 	// Toggle the outputs
 	if (s_toggle)
 	{
-		digitalWrite(ESR_PWM_OUT_LOW,  0);
-		digitalWrite(ESR_PWM_OUT_HIGH, 1);
+		OutClr(realPwmLow);
+		OutSet(realPwmHigh);
 	}
 	else
 	{
-		digitalWrite(ESR_PWM_OUT_HIGH, 0);
-		digitalWrite(ESR_PWM_OUT_LOW,  1);
+		OutClr(realPwmHigh);
+		OutSet(realPwmLow);
 	}
 
 	s_toggle ^= 1;

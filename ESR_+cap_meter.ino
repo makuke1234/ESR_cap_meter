@@ -136,11 +136,11 @@ void loop()
 	{
 		ticks = TC4->COUNT32.COUNT.reg;
 	}
-	auto fticks = float(ticks) / 48000000.f;
+	double fticks = double(ticks) / 48000000.0;
 	disp::lcd.setCursor(0, 0);
-	disp::lcd.print("Ticks: ");
-	disp::lcd.print(fticks, 3);
-	disp::lcd.print("       ");
+	disp::lcd.print("Time: ");
+	disp::lcd.print(fticks, 8);
+	disp::lcd.print("          ");
 
 	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 	//adc::calibrate(tempSample, true);

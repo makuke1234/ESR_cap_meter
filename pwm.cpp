@@ -18,7 +18,7 @@ void pwm::init(std::uint32_t frequency)
 
 	// Set frequency
 	const auto ticks = 48000000U / frequency;
-	TCC0->PER.reg = ticks - 1;
+	TCC0->PER.reg = ticks;
 	while (TCC0->SYNCBUSY.bit.PER);
 
 	// Start timer

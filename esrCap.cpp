@@ -1,5 +1,8 @@
 #include "esrCap.hpp"
 
+#define GCLK_GENCTRL_SRC_DPLL96M_Val 0x8ul
+#define GCLK_GENCTRL_SRC_DPLL96M (GCLK_GENCTRL_SRC_DPLL96M_Val << GCLK_GENCTRL_SRC_Pos)
+
 esr::MeterCalData esr::calData;
 cap::MeterCalData cap::calData;
 
@@ -56,10 +59,39 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 	OutMode(ESR_PWM_OUT_HIGH);
 
 	// Initialize timer clocks
+
+	// Feed 8 MHz to GCLK_DPLL
 	GCLK->CLKCTRL.reg =
-		GCLK_CLKCTRL_ID_TCC2_TC3 |
-		GCLK_CLKCTRL_GEN_GCLK0 |
-		GCLK_CLKCTRL_CLKEN;
+		GCLK_CLKCTRL_CLKEN |
+		GCLK_CLKCTRL_GEN_GCLK3 |
+		GCLK_CLKCTRL_ID(1);
+	while (GCLK->STATUS.bit.SYNCBUSY);
+
+	// Set DPLL ratio to 8 MHz * (11 + 1) = 96 MHz	
+	SYSCTRL->DPLLRATIO.reg =
+		SYSCTRL_DPLLRATIO_LDRFRAC(0) |	// Fractional ratio
+	    SYSCTRL_DPLLRATIO_LDR(11);		// Integral ratio
+
+	// Configure DPLL to disregard phase lock and select GCLK as source
+	SYSCTRL->DPLLCTRLB.reg =
+		SYSCTRL_DPLLCTRLB_LBYPASS |	// Bypass lock
+		SYSCTRL_DPLLCTRLB_WUF |		// Wake up fast
+		SYSCTRL_DPLLCTRLB_REFCLK(SYSCTRL_DPLLCTRLB_REFCLK_GCLK_Val);	// Select GCLK
+
+	// Enable DPLL
+	SYSCTRL->DPLLCTRLA.reg |= SYSCTRL_DPLLCTRLA_ENABLE;
+
+	GCLK->GENCTRL.reg = 
+		GCLK_GENCTRL_IDC |
+		GCLK_GENCTRL_GENEN |
+		GCLK_GENCTRL_SRC_DPLL96M |
+		GCLK_GENCTRL_ID(4);
+	while (GCLK->STATUS.bit.SYNCBUSY);
+
+	GCLK->CLKCTRL.reg =
+		GCLK_CLKCTRL_CLKEN |
+		GCLK_CLKCTRL_GEN_GCLK4 |
+		GCLK_CLKCTRL_ID_TCC2_TC3;
 	while (GCLK->STATUS.bit.SYNCBUSY);
 
 	// Set up multiplexing
@@ -85,19 +117,23 @@ void esr::setFrequency(std::uint32_t frequency) noexcept
 	// Calculate ticks from frequency
 	const auto ticks = 48000000U / frequency;
 
+	esr::outputEnable(false);
+
 	TCC2->PERB.reg = ticks;
 	while (TCC2->SYNCBUSY.bit.PERB);
 	const auto ticks2 = ticks / 2U;
 
-	TCC2->CCB[ESR_PWM_LOW_CHANNEL].reg  = ticks2 + 2;
+	TCC2->CCB[ESR_PWM_LOW_CHANNEL].reg  = ticks2 + 2U;
 	while (TCC2->SYNCBUSY.vec.CCB);
 
-	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 2;
+	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 2U;
 	while (TCC2->SYNCBUSY.vec.CCB);
+
+	esr::outputEnable(true);
 }
 void esr::outputEnable(bool enable) noexcept
 {
-	if (!enable)
+	if (!enable && TCC2->CTRLA.bit.ENABLE)
 	{
 		// Disable timer
 		TCC2->CTRLA.bit.ENABLE = 0;
@@ -107,7 +143,7 @@ void esr::outputEnable(bool enable) noexcept
 		OutClr(ESR_PWM_OUT_LOW);
 		OutClr(ESR_PWM_OUT_HIGH);
 	}
-	else
+	else if (enable && !TCC2->CTRLA.bit.ENABLE)
 	{
 		// Enable timer
 		TCC2->CTRLA.bit.ENABLE = 1;

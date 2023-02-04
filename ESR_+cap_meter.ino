@@ -20,9 +20,9 @@ void setup()
 
 	SerialUSB.print("Initializing PWM controller...");
 	pwm::init(LED_PWM_FREQUENCY);
-	pwm::add(0, LED_RED);
-	pwm::add(1, LED_GREEN);
-	pwm::add(2, LED_BLUE);
+	pwm::add(LED_RED_CC,   LED_RED);
+	pwm::add(LED_GREEN_CC, LED_GREEN);
+	pwm::add(LED_BLUE_CC,  LED_BLUE);
 	SerialUSB.println(" OK");
 
 
@@ -96,7 +96,7 @@ void setup()
 	);
 	SerialUSB.println(" OK");
 
-	setrgb(254, 100, 0);
+	setrgb(150, 100, 1);
 	SerialUSB.println("Initialization done!");
 }
 
@@ -175,9 +175,9 @@ void btnISR()
 
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b)
 {
-	pwm::duty(0, r);
-	pwm::duty(1, g);
-	pwm::duty(2, b);
+	pwm::duty(LED_RED_CC,   r);
+	pwm::duty(LED_GREEN_CC, g);
+	pwm::duty(LED_BLUE_CC,  b);
 }
 
 int SerialPrintf(const char * format, ...)

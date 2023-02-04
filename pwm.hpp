@@ -9,7 +9,6 @@ namespace pwm
 {
 	constexpr std::uint8_t dutyCycleArrSize = 4;
 
-	extern volatile bool enabled[dutyCycleArrSize];
 	extern std::uint8_t portPinNum[dutyCycleArrSize];
 
 	void init(std::uint32_t frequency);

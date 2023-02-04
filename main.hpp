@@ -16,8 +16,11 @@
 #define CAP_RC_DETECT 21   // asdasd
 #define ESR_OUT_11X   A2  // 8
 
-#define ESR_PWM_OUT_LOW   (12)  // 21
-#define ESR_PWM_OUT_HIGH  (13)  // 22
+#define ESR_PWM_OUT_LOW      (12)  // 21
+#define ESR_PWM_OUT_HIGH     (13)  // 22
+#define ESR_PWM_FUNCTION     PORT_PMUX_PMUXO_E_Val
+#define ESR_PWM_LOW_CHANNEL  0
+#define ESR_PWM_HIGH_CHANNEL 1
 #define CAP_CHARGE_OUT    1  // asd
 #define CAP_DISCHARGE_OUT 1  // asd
 

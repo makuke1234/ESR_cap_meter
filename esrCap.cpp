@@ -43,24 +43,6 @@ std::uint32_t esrcap::autoScaleGetSample(
 	return sample;
 }
 
-void TC3_Handler()
-{
-	// Toggle the outputs
-	if (TC3->COUNT16.INTFLAG.bit.MC0)
-	{
-		OutClr(ESR_PWM_OUT_LOW);
-		OutSet(ESR_PWM_OUT_HIGH);
-		TC3->COUNT16.INTFLAG.bit.MC0 = 1;
-	}
-	else if (TC3->COUNT16.INTFLAG.bit.MC1)
-	{
-		OutClr(ESR_PWM_OUT_HIGH);
-		OutSet(ESR_PWM_OUT_LOW);
-		TC3->COUNT16.COUNT.reg = 0;
-		TC3->COUNT16.INTFLAG.bit.MC1 = 1;
-	}
-}
-
 void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept
 {
 	assert(sampleFunc != nullptr);
@@ -78,26 +60,22 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 		GCLK_CLKCTRL_ID_TCC2_TC3 |
 		GCLK_CLKCTRL_GEN_GCLK0 |
 		GCLK_CLKCTRL_CLKEN;
-	while (GCLK->STATUS.bit.SYNCBUSY);	
+	while (GCLK->STATUS.bit.SYNCBUSY);
 
-	PM->APBCSEL.bit.APBCDIV = 0;  // No prescaler
-	PM->APBCMASK.bit.TC3_   = 1;  // Enable TC3 interface
+	// Set up multiplexing
+	PORT->Group[PGrp(ESR_PWM_OUT_LOW) ].PINCFG[ESR_PWM_OUT_LOW  & 0x1F].reg |= PORT_PINCFG_PMUXEN;
+	PORT->Group[PGrp(ESR_PWM_OUT_HIGH)].PINCFG[ESR_PWM_OUT_HIGH & 0x1F].reg |= PORT_PINCFG_PMUXEN;
+	auto func = (ESR_PWM_OUT_LOW  % 2) ? ESR_PWM_FUNCTION << PORT_PMUX_PMUXO_Pos : ESR_PWM_FUNCTION << PORT_PMUX_PMUXE_Pos;
+	PORT->Group[PGrp(ESR_PWM_OUT_LOW) ].PMUX[(ESR_PWM_OUT_LOW  & 0x1F) / 2].reg |= func;
 
-	TC3->COUNT16.CTRLA.reg =
-		TC_CTRLA_PRESCALER_DIV1 |
-		TC_CTRLA_MODE_COUNT16;
-	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
+	func = (ESR_PWM_OUT_HIGH % 2) ? ESR_PWM_FUNCTION << PORT_PMUX_PMUXO_Pos : ESR_PWM_FUNCTION << PORT_PMUX_PMUXE_Pos;
+	PORT->Group[PGrp(ESR_PWM_OUT_HIGH)].PMUX[(ESR_PWM_OUT_HIGH & 0x1F) / 2].reg |= func;
 
-	// Enable match interrupts
-	TC3->COUNT16.INTENSET.bit.MC0 = 1;
-	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
-	TC3->COUNT16.INTENSET.bit.MC1 = 1;
-	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
-
-	// Set the timer to be the most prioritized thing running
-	NVIC_SetPriority(TC3_IRQn, 0);
-	// Enable Timer3 interrupts
-	NVIC_EnableIRQ(TC3_IRQn);
+	// Set Wave output
+	constexpr auto secondChannel = (std::uint32_t[4]){ TCC_WAVE_POL0, TCC_WAVE_POL1, TCC_WAVE_POL2, TCC_WAVE_POL3 }[ESR_PWM_HIGH_CHANNEL];
+	TCC2->WAVE.reg = secondChannel |
+	                 TCC_WAVE_WAVEGEN_DSBOTTOM;
+	while (TCC2->SYNCBUSY.bit.WAVE);
 
 	esr::setFrequency(ESR_DEFAULT_FREQUENCY);
 }
@@ -107,30 +85,33 @@ void esr::setFrequency(std::uint32_t frequency) noexcept
 	// Calculate ticks from frequency
 	const auto ticks = 48000000U / frequency;
 
-	// Change timer tickcount
-	TC3->COUNT16.CC[1].reg = ticks;
-	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
-	TC3->COUNT16.CC[0].reg = ticks/2;
-	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
-	TC3->COUNT16.COUNT.reg = 0;
+	TCC2->PERB.reg = ticks;
+	while (TCC2->SYNCBUSY.bit.PERB);
+	const auto ticks2 = ticks / 2U;
+
+	TCC2->CCB[ESR_PWM_LOW_CHANNEL].reg  = ticks2 + 1;
+	while (TCC2->SYNCBUSY.vec.CCB);
+
+	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 1;
+	while (TCC2->SYNCBUSY.vec.CCB);
 }
 void esr::outputEnable(bool enable) noexcept
 {
 	if (!enable)
 	{
 		// Disable timer
-		TC3->COUNT16.CTRLA.bit.ENABLE = 0;
-		while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
+		TCC2->CTRLA.bit.ENABLE = 0;
+		while (TCC2->SYNCBUSY.bit.ENABLE);
 
-		// set outputs to 0
+		// Clear output
 		OutClr(ESR_PWM_OUT_LOW);
 		OutClr(ESR_PWM_OUT_HIGH);
 	}
 	else
 	{
 		// Enable timer
-		TC3->COUNT16.CTRLA.bit.ENABLE = 1;
-		while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
+		TCC2->CTRLA.bit.ENABLE = 1;
+		while (TCC2->SYNCBUSY.bit.ENABLE);
 	}
 }
 

@@ -8,23 +8,28 @@ static bool s_int = false, s_btnState = false;
 
 void setup()
 {
-	SerialUSB.begin(DEFAULT_BAUDRATE);
-	delay(10);
-	SerialUSB.println("Serial connection initialized.");
-
-	SerialUSB.print("Initializing RGB LED outputs...");
 	pinMode(LED_RED,   OUTPUT);
 	pinMode(LED_GREEN, OUTPUT);
 	pinMode(LED_BLUE,  OUTPUT);
-	SerialUSB.println(" OK");
 
-	SerialUSB.print("Initializing PWM controller...");
 	pwm::init(LED_PWM_FREQUENCY);
 	pwm::add(LED_RED_CC,   LED_RED);
 	pwm::add(LED_GREEN_CC, LED_GREEN);
 	pwm::add(LED_BLUE_CC,  LED_BLUE);
-	SerialUSB.println(" OK");
 
+	SerialUSB.begin(DEFAULT_BAUDRATE);
+	const auto sm = millis() + 5000;
+	while (!SerialUSB && (millis() < sm));
+
+	if (SerialUSB)
+	{
+		SerialUSB.println("Serial connection initialized.");
+		setrgb(0, 255, 0);
+	}
+	else
+	{
+		setrgb(255, 0, 0);
+	}
 
 	SerialUSB.print("Initializing button...");
 	pinMode(PUSH_BTN, INPUT);
@@ -53,22 +58,22 @@ void setup()
 		switch (realres)
 		{
 		case 8:
-			setrgb(1, 0, 0);
+			setrgb(255, 0, 0);
 			break;
 		case 10:
-			setrgb(1, 0, 1);
+			setrgb(255, 0, 255);
 			break;
 		case 12:
-			setrgb(1, 1, 0);
+			setrgb(255, 255, 0);
 			break;
 		case 13:
-			setrgb(0, 1, 1);
+			setrgb(0, 255, 255);
 			break;
 		case 14:
-			setrgb(0, 0, 1);
+			setrgb(0, 0, 255);
 			break;
 		case 15:
-			setrgb(0, 1, 0);
+			setrgb(0, 255, 0);
 			break;
 		}
 	}
@@ -99,7 +104,6 @@ void setup()
 	);
 	SerialUSB.println(" OK");
 
-	setrgb(255, 100, 1);
 	SerialUSB.println("Initialization done!");
 }
 

@@ -90,7 +90,7 @@ void setup()
 	SerialUSB.println(" OK");
 
 	esr::outputEnable();
-	esr::setFrequency(10000000);
+	esr::setFrequency(1000000);
 
 	SerialUSB.print("Initializing capacitance measuring...");
 	cap::init(

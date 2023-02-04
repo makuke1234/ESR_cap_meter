@@ -89,10 +89,10 @@ void esr::setFrequency(std::uint32_t frequency) noexcept
 	while (TCC2->SYNCBUSY.bit.PERB);
 	const auto ticks2 = ticks / 2U;
 
-	TCC2->CCB[ESR_PWM_LOW_CHANNEL].reg  = ticks2 + 1;
+	TCC2->CCB[ESR_PWM_LOW_CHANNEL].reg  = ticks2 + 2;
 	while (TCC2->SYNCBUSY.vec.CCB);
 
-	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 1;
+	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 2;
 	while (TCC2->SYNCBUSY.vec.CCB);
 }
 void esr::outputEnable(bool enable) noexcept

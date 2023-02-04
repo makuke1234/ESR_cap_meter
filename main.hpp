@@ -13,11 +13,11 @@
 // Pin configuration
 
 #define CAP_OUT       A1  // 7
-#define CAP_RC_DETECT 1   // asdasd
+#define CAP_RC_DETECT 21   // asdasd
 #define ESR_OUT_11X   A2  // 8
 
-#define ESR_PWM_OUT_LOW   1  // asd
-#define ESR_PWM_OUT_HIGH  1  // asd
+#define ESR_PWM_OUT_LOW   (12)  // 21
+#define ESR_PWM_OUT_HIGH  (13)  // 22
 #define CAP_CHARGE_OUT    1  // asd
 #define CAP_DISCHARGE_OUT 1  // asd
 

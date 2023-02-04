@@ -45,27 +45,20 @@ std::uint32_t esrcap::autoScaleGetSample(
 
 void TC3_Handler()
 {
-	static bool s_toggle = false;
-
-	TC3->COUNT16.COUNT.reg = 0;
-	constexpr auto realPwmLow  = ARDUINO_PIN_TO_PORT_PIN(ESR_PWM_OUT_LOW),
-	               realPwmHigh = ARDUINO_PIN_TO_PORT_PIN(ESR_PWM_OUT_HIGH);
-
 	// Toggle the outputs
-	if (s_toggle)
+	if (TC3->COUNT16.INTFLAG.bit.MC0)
 	{
-		OutClr(realPwmLow);
-		OutSet(realPwmHigh);
+		OutClr(ESR_PWM_OUT_LOW);
+		OutSet(ESR_PWM_OUT_HIGH);
+		TC3->COUNT16.INTFLAG.bit.MC0 = 1;
 	}
-	else
+	else if (TC3->COUNT16.INTFLAG.bit.MC1)
 	{
-		OutClr(realPwmHigh);
-		OutSet(realPwmLow);
+		OutClr(ESR_PWM_OUT_HIGH);
+		OutSet(ESR_PWM_OUT_LOW);
+		TC3->COUNT16.COUNT.reg = 0;
+		TC3->COUNT16.INTFLAG.bit.MC1 = 1;
 	}
-
-	s_toggle ^= 1;
-
-	TC3->COUNT16.INTFLAG.bit.MC0 = 1;
 }
 
 void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept
@@ -77,8 +70,8 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 	esr::calData.setGain   = gainFunc;
 
 	pinMode(ESR_OUT_11X, INPUT);
-	pinMode(ESR_PWM_OUT_LOW,  OUTPUT);
-	pinMode(ESR_PWM_OUT_HIGH, OUTPUT);
+	OutMode(ESR_PWM_OUT_LOW);
+	OutMode(ESR_PWM_OUT_HIGH);
 
 	// Initialize timer clocks
 	GCLK->CLKCTRL.reg =
@@ -90,13 +83,15 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 	PM->APBCSEL.bit.APBCDIV = 0;  // No prescaler
 	PM->APBCMASK.bit.TC3_   = 1;  // Enable TC3 interface
 
-	TC3->COUNT16.CTRLA.reg |=
+	TC3->COUNT16.CTRLA.reg =
 		TC_CTRLA_PRESCALER_DIV1 |
 		TC_CTRLA_MODE_COUNT16;
 	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
 
 	// Enable match interrupts
-	TC3->COUNT16.INTENSET.bit.MC0 = 0x1;
+	TC3->COUNT16.INTENSET.bit.MC0 = 1;
+	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
+	TC3->COUNT16.INTENSET.bit.MC1 = 1;
 	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
 
 	// Set the timer to be the most prioritized thing running
@@ -113,7 +108,10 @@ void esr::setFrequency(std::uint32_t frequency) noexcept
 	const auto ticks = 48000000U / frequency;
 
 	// Change timer tickcount
+	TC3->COUNT16.CC[1].reg = ticks;
+	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
 	TC3->COUNT16.CC[0].reg = ticks/2;
+	while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
 	TC3->COUNT16.COUNT.reg = 0;
 }
 void esr::outputEnable(bool enable) noexcept
@@ -125,8 +123,8 @@ void esr::outputEnable(bool enable) noexcept
 		while (TC3->COUNT16.STATUS.bit.SYNCBUSY);
 
 		// set outputs to 0
-		digitalWrite(ESR_PWM_OUT_LOW,  0);
-		digitalWrite(ESR_PWM_OUT_HIGH, 0);
+		OutClr(ESR_PWM_OUT_LOW);
+		OutClr(ESR_PWM_OUT_HIGH);
 	}
 	else
 	{
@@ -235,12 +233,13 @@ static void capMeasurementISR() noexcept
 	cap::calData.measureTicks = ticks;
 	// Mark as done
 	cap::calData.measureDone = true;
-
+	
+	SerialUSB.println("ISR!!!");
 }
 void cap::startMeasureMent_async() noexcept
 {
 	// Disable discharge
-	digitalWrite(CAP_DISCHARGE_OUT, 0);
+	//digitalWrite(CAP_DISCHARGE_OUT, 0);
 
 	cap::calData.measureDone = false;
 
@@ -258,7 +257,7 @@ void cap::startMeasureMent_async() noexcept
 	while (TC4->COUNT32.STATUS.bit.SYNCBUSY);
 
 	// Start charging
-	digitalWrite(CAP_CHARGE_OUT, 1);
+	//digitalWrite(CAP_CHARGE_OUT, 1);
 }
 std::uint32_t cap::measureTicks(bool discharge, std::uint32_t timeoutTicks) noexcept
 {
@@ -289,6 +288,8 @@ bool cap::measureTicks_async(std::uint32_t & ticks, bool discharge) noexcept
 		cap::discharge();		
 	}
 
+	cap::calData.measureDone = false;
+
 	return ret;
 }
 void cap::stopMeasurement() noexcept
@@ -297,7 +298,7 @@ void cap::stopMeasurement() noexcept
 	TC4->COUNT32.CTRLA.bit.ENABLE = 0;
 	while (TC4->COUNT32.STATUS.bit.SYNCBUSY);
 	// Disable RC interrupt
-	detachInterrupt(digitalPinToInterrupt(CAP_RC_DETECT));
+	disableInterrupt(digitalPinToInterrupt(CAP_RC_DETECT));
 }
 bool cap::isDischarged() noexcept
 {

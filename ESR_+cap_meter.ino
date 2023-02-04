@@ -29,7 +29,7 @@ void setup()
 	SerialUSB.print("Initializing button...");
 	pinMode(PUSH_BTN, INPUT);
 	// Attach interrupt to the button
-	attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
+	//attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
 	SerialUSB.println(" OK");
 
 	SerialUSB.print("Initializing display...");
@@ -89,6 +89,9 @@ void setup()
 	);
 	SerialUSB.println(" OK");
 
+	esr::outputEnable();
+	esr::setFrequency(100000);
+
 	SerialUSB.print("Initializing capacitance measuring...");
 	cap::init(
 		&getSampleInterfaceCap,
@@ -103,6 +106,7 @@ void setup()
 void loop()
 {
 	static long last = 0;
+	static bool measure = false;
 
 	if (s_int)
 	{
@@ -112,24 +116,37 @@ void loop()
 		s_int = false;
 		
 		// Interrupt handling code
-		SerialUSB.println("ADC getVolts_fpd function output for ADC samples: ");
-		for (std::uint16_t i = 0; i < 255; ++i)
-		{
-			SerialUSB.print(i);
-			SerialUSB.print(": ");
-			SerialUSB.println(adc::getVolts_fpd(i));
-		}
+	}
+	if (!measure && !digitalRead(PUSH_BTN))
+	{
+		setrgb(255, 0, 255);
+		delay(100);
+		while (!digitalRead(PUSH_BTN));
+		cap::startMeasureMent_async();
+		measure = true;
 	}
 
+	static std::uint32_t ticks = 0;
+	if (measure && cap::measureTicks_async(ticks, false))
+	{
+		setrgb(0, 255, 0);
+		measure = false;
+	}
+	else if (measure)
+	{
+		ticks = TC4->COUNT32.COUNT.reg;
+	}
+	auto fticks = float(ticks) / 48000000.f;
+	disp::lcd.setCursor(0, 0);
+	disp::lcd.print("Ticks: ");
+	disp::lcd.print(fticks, 3);
+	disp::lcd.print("       ");
+
 	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
-	adc::calibrate(tempSample, true);
+	//adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
 	const auto supply = adc::getSupply();
 
-	disp::lcd.setCursor(0, 0);
-	disp::lcd.print("Ref: ");
-	disp::lcd.print(adc::calData.ref1VReal, 6);
-	disp::lcd.print("V");
 
 	disp::lcd.setCursor(0, 1);
 	disp::lcd.print("Temp: ");
@@ -151,7 +168,13 @@ void loop()
 	
 	SerialUSB.println();
 
-	while (!s_int && ((millis() - last) < 1000));
+	while (!s_int && ((millis() - last) < 25))
+	{
+		if (!digitalRead(PUSH_BTN))
+		{
+			break;
+		}
+	}
 	last = millis();
 }
 

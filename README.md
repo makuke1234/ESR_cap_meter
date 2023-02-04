@@ -3,10 +3,10 @@
 This is an ATSAMD21G16x based ESR and capacitance meter. Due to program size,
 at least the *16* chip is required (64 KB Flash, 8 KB RAM).
 
-Schematic:
+## Schematic:
 ![schematic](./Schematic/Capacitor%20ESR-meter+capacitance.svg)
 
-List of supported chips:
+## List of supported chips:
 * [x] ATSAMD21E16A
 * [x] ATSAMD21E16B
 * [x] ATSAMD21G16A

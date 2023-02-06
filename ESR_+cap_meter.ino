@@ -12,7 +12,7 @@ void setup()
 	clk::pll96(GCLK_CLKCTRL_GEN_GCLK3_Val, 8000000U);
 	clk::initGCLK(GCLK_CLKCTRL_GEN_GCLK4_Val, GCLK_GENCTRL_SRC_DPLL96M_Val);
 
-	//heartbeat::init();
+	heartbeat::init();
 
 	pinMode(LED_RED,   OUTPUT);
 	pinMode(LED_GREEN, OUTPUT);
@@ -39,7 +39,14 @@ void setup()
 	}
 	else
 	{
-		setrgb(255, 25, 0);
+		if (heartbeat::isConnected())
+		{
+			setrgb(0, 25, 127);
+		}
+		else
+		{
+			setrgb(255, 25, 0);
+		}
 	}
 
 	SerialUSB.print("Initializing button...");

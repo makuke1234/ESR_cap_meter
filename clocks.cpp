@@ -105,7 +105,7 @@ void clk::initGCLK(std::uint8_t gclkid, std::uint8_t src, std::uint32_t prescale
 		GCLK_GENCTRL_IDC |
 		GCLK_GENCTRL_GENEN |
 		GCLK_GENCTRL_SRC(std::uint32_t(src)) |
-		(expPrescaler ? GCLK_GENCTRL_DIVSEL : 0UL) |
+		(expPrescaler ? GCLK_GENCTRL_DIVSEL : 0) |
 		GCLK_GENCTRL_ID(std::uint32_t(gclkid));
 	while (GCLK->STATUS.bit.SYNCBUSY);
 }

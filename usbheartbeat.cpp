@@ -9,11 +9,12 @@ void TC3_Handler()
 	TC3->COUNT16.COUNT.reg = 0;
 
 	const auto count = USB->DEVICE.FNUM.bit.FNUM;
+	//const auto count = 0;
 	s_isConnected = (count != oldCount);
 	oldCount = count;
 
 	// Clear overflow interrupt flag
-	TC3->COUNT16.INTENSET.bit.MC0 = 1;
+	TC3->COUNT16.INTFLAG.bit.MC0 = 1;
 }
 
 void heartbeat::init()

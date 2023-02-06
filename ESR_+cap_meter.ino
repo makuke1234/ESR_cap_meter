@@ -3,11 +3,17 @@
 #include "display.hpp"
 #include "esrCap.hpp"
 #include "pwm.hpp"
+#include "usbheartbeat.hpp"
 
 static bool s_int = false, s_btnState = false;
 
 void setup()
 {
+	clk::pll96(GCLK_CLKCTRL_GEN_GCLK3_Val, 8000000U);
+	clk::initGCLK(GCLK_CLKCTRL_GEN_GCLK4_Val, GCLK_GENCTRL_SRC_DPLL96M_Val);
+
+	//heartbeat::init();
+
 	pinMode(LED_RED,   OUTPUT);
 	pinMode(LED_GREEN, OUTPUT);
 	pinMode(LED_BLUE,  OUTPUT);
@@ -18,10 +24,15 @@ void setup()
 	pwm::add(LED_BLUE_CC,  LED_BLUE);
 
 	SerialUSB.begin(DEFAULT_BAUDRATE);
-	const auto sm = millis() + 5000;
-	while (!SerialUSB && (millis() < sm));
+	bool connected = false;
+	if (heartbeat::isConnected())
+	{
+		const auto sm = millis() + 5000;
+		while (!SerialUSB && (millis() < sm));
+		connected = SerialUSB != 0;
+	}
 
-	if (SerialUSB)
+	if (connected)
 	{
 		SerialUSB.println("Serial connection initialized.");
 		setrgb(0, 255, 0);
@@ -146,7 +157,7 @@ void loop()
 	disp::lcd.print(fticks, 8);
 	disp::lcd.print("          ");
 
-	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
+	const auto tempSample = adc::sample(adc::Channel::IntTemp, false);
 	//adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
 	const auto supply = adc::getSupply();

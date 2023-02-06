@@ -1,8 +1,5 @@
 #include "esrCap.hpp"
 
-#define GCLK_GENCTRL_SRC_DPLL96M_Val 0x8ul
-#define GCLK_GENCTRL_SRC_DPLL96M (GCLK_GENCTRL_SRC_DPLL96M_Val << GCLK_GENCTRL_SRC_Pos)
-
 esr::MeterCalData esr::calData;
 cap::MeterCalData cap::calData;
 
@@ -60,39 +57,24 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 
 	// Initialize timer clocks
 
-	// Feed 8 MHz to GCLK_DPLL
-	GCLK->CLKCTRL.reg =
-		GCLK_CLKCTRL_CLKEN |
-		GCLK_CLKCTRL_GEN_GCLK3 |
-		GCLK_CLKCTRL_ID(1);
-	while (GCLK->STATUS.bit.SYNCBUSY);
+	clk::initGCLK(GCLK_CLKCTRL_GEN_GCLK4_Val, GCLK_GENCTRL_SRC_DPLL96M_Val);
 
-	// Set DPLL ratio to 8 MHz * (11 + 1) = 96 MHz	
-	SYSCTRL->DPLLRATIO.reg =
-		SYSCTRL_DPLLRATIO_LDRFRAC(0) |	// Fractional ratio
-	    SYSCTRL_DPLLRATIO_LDR(11);		// Integral ratio
+	std::uint32_t tmrFreq = 96000000U;
+	if (!clk::isInit(clk::tmr::tTCC2))
+	{
+		clk::initTmr(clk::tmr::tTCC2, GCLK_CLKCTRL_GEN_GCLK4_Val, tmrFreq);
+	}
+	else
+	{
+		tmrFreq = clk::tmrSpeed(clk::tmr::tTCC2);
+	}
+	assert(tmrFreq == 96000000U);
 
-	// Configure DPLL to disregard phase lock and select GCLK as source
-	SYSCTRL->DPLLCTRLB.reg =
-		SYSCTRL_DPLLCTRLB_LBYPASS |	// Bypass lock
-		SYSCTRL_DPLLCTRLB_WUF |		// Wake up fast
-		SYSCTRL_DPLLCTRLB_REFCLK(SYSCTRL_DPLLCTRLB_REFCLK_GCLK_Val);	// Select GCLK
-
-	// Enable DPLL
-	SYSCTRL->DPLLCTRLA.reg |= SYSCTRL_DPLLCTRLA_ENABLE;
-
-	GCLK->GENCTRL.reg = 
-		GCLK_GENCTRL_IDC |
-		GCLK_GENCTRL_GENEN |
-		GCLK_GENCTRL_SRC_DPLL96M |
-		GCLK_GENCTRL_ID(4);
-	while (GCLK->STATUS.bit.SYNCBUSY);
-
-	GCLK->CLKCTRL.reg =
+	/*GCLK->CLKCTRL.reg =
 		GCLK_CLKCTRL_CLKEN |
 		GCLK_CLKCTRL_GEN_GCLK4 |
 		GCLK_CLKCTRL_ID_TCC2_TC3;
-	while (GCLK->STATUS.bit.SYNCBUSY);
+	while (GCLK->STATUS.bit.SYNCBUSY);*/
 
 	// Set up multiplexing
 	PORT->Group[PGrp(ESR_PWM_OUT_LOW) ].PINCFG[ESR_PWM_OUT_LOW  & 0x1F].reg |= PORT_PINCFG_PMUXEN;

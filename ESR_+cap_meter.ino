@@ -23,11 +23,18 @@ void setup()
 	pwm::add(LED_GREEN_CC, LED_GREEN);
 	pwm::add(LED_BLUE_CC,  LED_BLUE);
 
+	pinMode(PUSH_BTN, INPUT);
+	// Attach interrupt to the button
+	//attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
+	
 	SerialUSB.begin(DEFAULT_BAUDRATE);
 	bool connected = false;
-	if (heartbeat::isConnected())
+	auto sm = millis() + 500;
+	while (!heartbeat::isConnected() && (millis() < sm));
+	if (!digitalRead(PUSH_BTN) && heartbeat::isConnected())
 	{
-		const auto sm = millis() + 5000;
+		setrgb(0, 25, 127);
+		sm = millis() + 5000;
 		while (!SerialUSB && (millis() < sm));
 		connected = SerialUSB != 0;
 	}
@@ -39,21 +46,9 @@ void setup()
 	}
 	else
 	{
-		if (heartbeat::isConnected())
-		{
-			setrgb(0, 25, 127);
-		}
-		else
-		{
-			setrgb(255, 25, 0);
-		}
+		setrgb(255, 25, 0);
 	}
 
-	SerialUSB.print("Initializing button...");
-	pinMode(PUSH_BTN, INPUT);
-	// Attach interrupt to the button
-	//attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
-	SerialUSB.println(" OK");
 
 	SerialUSB.print("Initializing display...");
 	disp::init();

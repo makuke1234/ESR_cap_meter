@@ -220,8 +220,6 @@ static void capMeasurementISR()
 	cap::calData.measureTicks = ticks;
 	// Mark as done
 	cap::calData.measureDone = true;
-	
-	SerialUSB.println("ISR!!!");
 }
 void cap::startMeasureMent_async()
 {

@@ -9,7 +9,6 @@ void TC3_Handler()
 	TC3->COUNT16.COUNT.reg = 0;
 
 	const auto count = USB->DEVICE.FNUM.bit.FNUM;
-	//const auto count = 0;
 	s_isConnected = (count != oldCount);
 	oldCount = count;
 
@@ -73,5 +72,5 @@ void heartbeat::init()
 }
 bool heartbeat::isConnected()
 {
-	return s_isConnected;
+	return s_isConnected != 0;
 }

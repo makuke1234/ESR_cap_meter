@@ -2,15 +2,15 @@
 
 adc::AdcCalData adc::calData;
 
-static void syncgclk() noexcept
+static void syncgclk()
 {
 	while (GCLK->STATUS.bit.SYNCBUSY);
 }
-static void syncadc() noexcept
+static void syncadc()
 {
 	while (ADC->STATUS.bit.SYNCBUSY);
 }
-static std::uint16_t s_sample() noexcept
+static std::uint16_t s_sample()
 {
 	ADC->SWTRIG.bit.START = 1;			// Initiate software trigger to start ADC conversion
 	syncadc();
@@ -21,7 +21,7 @@ static std::uint16_t s_sample() noexcept
 	return ADC->RESULT.reg;
 }
 
-std::uint16_t adc::toCounts(std::uint16_t val, std::uint8_t resolution) noexcept
+std::uint16_t adc::toCounts(std::uint16_t val, std::uint8_t resolution)
 {
 	const auto resDelta = std::int8_t(resolution) - ADC_RESOLUTION_BITS;
 	if (!resDelta)
@@ -37,7 +37,7 @@ std::uint16_t adc::toCounts(std::uint16_t val, std::uint8_t resolution) noexcept
 		return (val << resDelta);
 	}
 }
-std::uint16_t adc::fromCounts(std::uint16_t val, std::uint8_t resolution) noexcept
+std::uint16_t adc::fromCounts(std::uint16_t val, std::uint8_t resolution)
 {
 	return adc::toCounts(val, 2 * ADC_RESOLUTION_BITS - resolution);
 }
@@ -55,7 +55,7 @@ adc::LogRow::LogRow()
 	this->roomAdcVal     = ADC_CAL_EXTRACT(regVal2, ADC_CAL_ROOM_ADC_VAL);
 	this->hotAdcVal      = ADC_CAL_EXTRACT(regVal2, ADC_CAL_HOT_ADC_VAL);
 
-	const auto calcref = [](std::int8_t val) noexcept -> float
+	const auto calcref = [](std::int8_t val) -> float
 	{
 		return 1.0f - float(val) / 1000.f;
 	};
@@ -69,7 +69,7 @@ adc::LogRow::LogRow()
 	this->VADCR  = float(this->roomAdcVal) / (this->INT1VR * this->maxCountsFloat);
 }
 
-std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples) noexcept
+std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples)
 {
 	std::uint8_t ret = adcResolution;
 
@@ -290,7 +290,7 @@ std::uint8_t adc::init(std::uint8_t adcResolution, std::uint16_t overSamplingSam
 	return ret;
 }
 
-void adc::startAdc() noexcept
+void adc::startAdc()
 {
 	// Enable ADC peripheral
 	PM->APBCMASK.reg |= PM_APBCMASK_ADC;
@@ -305,7 +305,7 @@ void adc::startAdc() noexcept
 	// The first sample is rubbish anyway
 	s_sample();
 }
-void adc::stopAdc() noexcept
+void adc::stopAdc()
 {
 	// Disable ADC
 	ADC->CTRLA.bit.ENABLE = 0x00;
@@ -318,7 +318,7 @@ void adc::stopAdc() noexcept
 	PM->APBCMASK.reg &= ~PM_APBCMASK_ADC;
 }
 
-void adc::setGain(Gain gainIdx) noexcept
+void adc::setGain(Gain gainIdx)
 {
 	std::uint8_t gain;
 	switch (gainIdx)
@@ -348,14 +348,14 @@ void adc::setGain(Gain gainIdx) noexcept
 	adc::calData.gainIdx     = std::uint8_t(gainIdx);
 	adc::calData.gainSetting = gain;
 }
-void adc::setSamplingTime(std::uint8_t time) noexcept
+void adc::setSamplingTime(std::uint8_t time)
 {
 	assert(time < 64);
 
 	ADC->SAMPCTRL.reg = time;
 	syncadc();
 }
-std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noexcept
+std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode)
 {
 	preciseTemp &= (ADC_CLK_DIV != ADC_SLOW_CLK_DIV);
 	const auto prescaler = ADC->CTRLB.bit.PRESCALER;
@@ -427,11 +427,11 @@ std::uint16_t adc::sample(Channel channel, bool preciseTemp, bool diffMode) noex
 
 	return result;
 }
-float adc::getVolts(std::uint16_t sample) noexcept
+float adc::getVolts(std::uint16_t sample)
 {
 	return float(fp::fromD(adc::getVolts_fpd(sample)));
 }
-std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
+std::uint32_t adc::getVolts_fpd(std::uint16_t sample)
 {
 	/*float maxCounts = float(ADC_MAX_COUNTS);
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
@@ -449,7 +449,7 @@ std::uint32_t adc::getVolts_fpd(std::uint16_t sample) noexcept
 
 	return volts;
 }
-void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
+void adc::calibrate(std::uint16_t tempSample, bool fullCal)
 {
 	if (fullCal)
 	{
@@ -484,13 +484,13 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal) noexcept
 	adc::calData.ref1VReal = INT1VM;
 	adc::calData.ref1VReal_FPD = fp::to(adc::calData.ref1VReal);
 }
-float adc::getTemp(std::uint16_t tempSample) noexcept
+float adc::getTemp(std::uint16_t tempSample)
 {
 	const auto & lr = adc::calData.lr;
 	return lr.tempR + ((lr.tempH - lr.tempR) * (adc::getVolts(tempSample) - lr.VADCR)/(lr.VADCH - lr.VADCR));
 }
 
-float adc::getSupply(bool preciseMeas) noexcept
+float adc::getSupply(bool preciseMeas)
 {
 	const auto sample = adc::sample(Channel::IOSupply_1_4, preciseMeas);
 	adc::calData.supplyVoltage_FPD = 4U * adc::getVolts_fpd(sample);

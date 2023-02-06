@@ -7,5 +7,5 @@ namespace disp
 {
 	extern LiquidCrystal lcd;
 
-	void init() noexcept;
+	void init();
 }

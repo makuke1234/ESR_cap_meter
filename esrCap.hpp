@@ -10,15 +10,15 @@
 
 namespace esrcap
 {
-	using sampleFunc_t = std::uint32_t (*)(bool precisemode) noexcept;
-	using gainFunc_t   = void (*)(std::uint8_t gain) noexcept;
+	using sampleFunc_t = std::uint32_t (*)(bool precisemode);
+	using gainFunc_t   = void (*)(std::uint8_t gain);
 
 	std::uint32_t autoScaleGetSample(
 		sampleFunc_t sampleFunc,
 		gainFunc_t gainFunc,
 		std::uint8_t & gain,
 		bool precisemode = false
-	) noexcept;
+	);
 }
 
 namespace esr
@@ -47,20 +47,20 @@ namespace esr
 	};
 	extern MeterCalData calData;
 
-	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept;
+	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc);
 
-	void setFrequency(std::uint32_t frequency) noexcept;
-	void outputEnable(bool enable = true) noexcept;
+	void setFrequency(std::uint32_t frequency);
+	void outputEnable(bool enable = true);
 
-	bool zeroReading() noexcept;
+	bool zeroReading();
 
-	std::int32_t measureESR_fpd(bool & overload) noexcept;
-	float measureESR(bool & overload) noexcept;
+	std::int32_t measureESR_fpd(bool & overload);
+	float measureESR(bool & overload);
 
-	std::int32_t calcVoltsPreDivider_fpd(std::int32_t voltage) noexcept;
-	std::int32_t calcDetectorAmplitude_fpd(std::int32_t preVoltage) noexcept;
-	std::int32_t calcESRDivider_fpd(std::int32_t voltage) noexcept;
-	std::int32_t calcESR_fpd(std::int32_t voltage) noexcept;
+	std::int32_t calcVoltsPreDivider_fpd(std::int32_t voltage);
+	std::int32_t calcDetectorAmplitude_fpd(std::int32_t preVoltage);
+	std::int32_t calcESRDivider_fpd(std::int32_t voltage);
+	std::int32_t calcESR_fpd(std::int32_t voltage);
 }
 
 namespace cap
@@ -79,15 +79,15 @@ namespace cap
 	};
 	extern MeterCalData calData;
 
-	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept;
+	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc);
 
-	void startMeasureMent_async() noexcept;
-	std::uint32_t measureTicks(bool discharge = true, std::uint32_t timeoutTicks = CAP_TIMEOUT_TICKS) noexcept;
-	bool measureTicks_async(std::uint32_t & ticks, bool discharge = true) noexcept;
-	void stopMeasurement() noexcept;
-	bool isDischarged() noexcept;
-	void discharge() noexcept;
+	void startMeasureMent_async();
+	std::uint32_t measureTicks(bool discharge = true, std::uint32_t timeoutTicks = CAP_TIMEOUT_TICKS);
+	bool measureTicks_async(std::uint32_t & ticks, bool discharge = true);
+	void stopMeasurement();
+	bool isDischarged();
+	void discharge();
 
 	// Calculate capacitance in nF
-	std::int32_t calcCapacitance_fpd(std::int32_t ticks) noexcept;
+	std::int32_t calcCapacitance_fpd(std::int32_t ticks);
 }

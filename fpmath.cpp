@@ -1,10 +1,10 @@
 #include "fpmath.hpp"
 
-char * fp::frac(std::int32_t fpd, std::uint8_t accuracy) noexcept
+char * fp::frac(std::int32_t fpd, std::uint8_t accuracy)
 {
 	assert(accuracy < 10);
 
-	const auto intpow = [](std::uint32_t a, std::uint32_t b) noexcept -> std::uint32_t
+	const auto intpow = [](std::uint32_t a, std::uint32_t b) -> std::uint32_t
 	{
 		switch (b)
 		{

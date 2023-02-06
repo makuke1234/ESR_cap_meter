@@ -63,13 +63,13 @@
 namespace adc
 {
 	template<typename T>
-	constexpr T clamp(T v, T min, T max) noexcept
+	constexpr T clamp(T v, T min, T max)
 	{
 		return (v < min) ? min : ((v > max) ? max : v);
 	}
 
-	std::uint16_t toCounts(std::uint16_t val, std::uint8_t resolution) noexcept;
-	std::uint16_t fromCounts(std::uint16_t val, std::uint8_t resolution) noexcept;
+	std::uint16_t toCounts(std::uint16_t val, std::uint8_t resolution);
+	std::uint16_t fromCounts(std::uint16_t val, std::uint8_t resolution);
 
 	struct LogRow
 	{
@@ -92,7 +92,7 @@ namespace adc
 		float VADCH;
 		float VADCR;
 
-		LogRow() noexcept;
+		LogRow();
 	};
 
 	enum class Gain : std::uint8_t
@@ -145,26 +145,26 @@ namespace adc
 	  * 0 by default for automatic oversampling modes
 	  * @return Effective real ADC resolution achieved
 	  */
-	std::uint8_t init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples = 0) noexcept;
+	std::uint8_t init(std::uint8_t adcResolution, std::uint16_t overSamplingSamples = 0);
 
-	void startAdc() noexcept;
-	void stopAdc() noexcept;
+	void startAdc();
+	void stopAdc();
 
-	constexpr std::uint8_t pinToMux(std::uint8_t pin) noexcept
+	constexpr std::uint8_t pinToMux(std::uint8_t pin)
 	{
 		return (pin <= 4) ? ((std::uint8_t[5]){ 19, 18, 0, 17, 16 }[pin]) : ((pin <= 7) ? (pin - 2) : ((std::uint8_t[6]){ 0, 2, 3, 4, 5, 10 }[pin - A0]) );
 	}
 
-	void setGain(Gain gainIdx) noexcept;
+	void setGain(Gain gainIdx);
 	/**
 	  * @brief Sets the sampling time length for the ADC
 	  * @param time Sampling time value in the range of 0 ... 63
 	  */
-	void setSamplingTime(std::uint8_t time) noexcept;
-	std::uint16_t sample(Channel channel, bool preciseTemp = false, bool diffMode = false) noexcept;
-	float getVolts(std::uint16_t sample) noexcept;
-	std::uint32_t getVolts_fpd(std::uint16_t sample) noexcept;
-	void calibrate(std::uint16_t tempSample, bool fullCal = false) noexcept;
-	float getTemp(std::uint16_t tempSample) noexcept;
-	float getSupply(bool preciseMeas = false) noexcept;
+	void setSamplingTime(std::uint8_t time);
+	std::uint16_t sample(Channel channel, bool preciseTemp = false, bool diffMode = false);
+	float getVolts(std::uint16_t sample);
+	std::uint32_t getVolts_fpd(std::uint16_t sample);
+	void calibrate(std::uint16_t tempSample, bool fullCal = false);
+	float getTemp(std::uint16_t tempSample);
+	float getSupply(bool preciseMeas = false);
 }

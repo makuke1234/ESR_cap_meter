@@ -157,7 +157,7 @@ void loop()
 	disp::lcd.print(fticks, 8);
 	disp::lcd.print("          ");
 
-	const auto tempSample = adc::sample(adc::Channel::IntTemp, false);
+	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 	//adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
 	const auto supply = adc::getSupply();

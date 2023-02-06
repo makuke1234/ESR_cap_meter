@@ -8,7 +8,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 	esrcap::gainFunc_t gainFunc,
 	std::uint8_t & oldgain,
 	bool precisemode
-) noexcept
+)
 {
 	auto sample = sampleFunc(precisemode);
 
@@ -43,7 +43,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 	return sample;
 }
 
-void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept
+void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 {
 	assert(sampleFunc != nullptr);
 	assert(gainFunc != nullptr);
@@ -57,8 +57,6 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 
 	// Initialize timer clocks
 
-	clk::initGCLK(GCLK_CLKCTRL_GEN_GCLK4_Val, GCLK_GENCTRL_SRC_DPLL96M_Val);
-
 	std::uint32_t tmrFreq = 96000000U;
 	if (!clk::isInit(clk::tmr::tTCC2))
 	{
@@ -69,12 +67,6 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 		tmrFreq = clk::tmrSpeed(clk::tmr::tTCC2);
 	}
 	assert(tmrFreq == 96000000U);
-
-	/*GCLK->CLKCTRL.reg =
-		GCLK_CLKCTRL_CLKEN |
-		GCLK_CLKCTRL_GEN_GCLK4 |
-		GCLK_CLKCTRL_ID_TCC2_TC3;
-	while (GCLK->STATUS.bit.SYNCBUSY);*/
 
 	// Set up multiplexing
 	PORT->Group[PGrp(ESR_PWM_OUT_LOW) ].PINCFG[ESR_PWM_OUT_LOW  & 0x1F].reg |= PORT_PINCFG_PMUXEN;
@@ -94,7 +86,7 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 	esr::setFrequency(ESR_DEFAULT_FREQUENCY);
 }
 
-void esr::setFrequency(std::uint32_t frequency) noexcept
+void esr::setFrequency(std::uint32_t frequency)
 {
 	// Calculate ticks from frequency
 	const auto ticks = 48000000U / frequency;
@@ -113,7 +105,7 @@ void esr::setFrequency(std::uint32_t frequency) noexcept
 
 	esr::outputEnable(true);
 }
-void esr::outputEnable(bool enable) noexcept
+void esr::outputEnable(bool enable)
 {
 	if (!enable && TCC2->CTRLA.bit.ENABLE)
 	{
@@ -133,14 +125,14 @@ void esr::outputEnable(bool enable) noexcept
 	}
 }
 
-bool esr::zeroReading() noexcept
+bool esr::zeroReading()
 {
 	bool overload;
 	esr::calData.outputOffset_FPD += esr::measureESR_fpd(overload);
 	return !overload;
 }
 
-std::int32_t esr::measureESR_fpd(bool & overload) noexcept
+std::int32_t esr::measureESR_fpd(bool & overload)
 {
 	auto sample = esrcap::autoScaleGetSample(
 		esr::calData.getSample,
@@ -165,16 +157,16 @@ std::int32_t esr::measureESR_fpd(bool & overload) noexcept
 
 	return esr::calcESR_fpd(sample);
 }
-float esr::measureESR(bool & overload) noexcept
+float esr::measureESR(bool & overload)
 {
 	return fp::fromD(esr::measureESR_fpd(overload));
 }
 
-std::int32_t esr::calcVoltsPreDivider_fpd(std::int32_t voltage) noexcept
+std::int32_t esr::calcVoltsPreDivider_fpd(std::int32_t voltage)
 {
 	return fp::div(voltage, esr::calData.vdiv_FPD);
 }
-std::int32_t esr::calcDetectorAmplitude_fpd(std::int32_t preVoltage) noexcept
+std::int32_t esr::calcDetectorAmplitude_fpd(std::int32_t preVoltage)
 {
 	std::int32_t ampl = esr::calcVoltsPreDivider_fpd(preVoltage);
 	ampl = fp::div(ampl, fp::to(ESR_AMP_GAIN));
@@ -182,12 +174,12 @@ std::int32_t esr::calcDetectorAmplitude_fpd(std::int32_t preVoltage) noexcept
 
 	return 2 * ampl;
 }
-std::int32_t esr::calcESRDivider_fpd(std::int32_t voltage) noexcept
+std::int32_t esr::calcESRDivider_fpd(std::int32_t voltage)
 {
 	std::int32_t ampl = esr::calcDetectorAmplitude_fpd(voltage);
 	return (ampl) ? fp::div(fp::to(ESR_CAP_BURDEN_VOLTAGE), ampl) : INT32_MAX;
 }
-std::int32_t esr::calcESR_fpd(std::int32_t voltage) noexcept
+std::int32_t esr::calcESR_fpd(std::int32_t voltage)
 {
 	std::int32_t r = fp::div(fp::to(ESR_R_OUT), esr::calcESRDivider_fpd(voltage) - fp::to(1.0));
 	r -= esr::calData.outputOffset_FPD;
@@ -196,7 +188,7 @@ std::int32_t esr::calcESR_fpd(std::int32_t voltage) noexcept
 }
 
 
-void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noexcept
+void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 {
 	assert(sampleFunc != nullptr);
 	assert(gainFunc != nullptr);
@@ -222,7 +214,7 @@ void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc) noe
 	while (TC4->COUNT32.STATUS.bit.SYNCBUSY);
 }
 
-static void capMeasurementISR() noexcept
+static void capMeasurementISR()
 {
 	// Capture timer ticks
 	const auto ticks = TC4->COUNT32.COUNT.reg;
@@ -235,7 +227,7 @@ static void capMeasurementISR() noexcept
 	
 	SerialUSB.println("ISR!!!");
 }
-void cap::startMeasureMent_async() noexcept
+void cap::startMeasureMent_async()
 {
 	// Disable discharge
 	//digitalWrite(CAP_DISCHARGE_OUT, 0);
@@ -258,7 +250,7 @@ void cap::startMeasureMent_async() noexcept
 	// Start charging
 	//digitalWrite(CAP_CHARGE_OUT, 1);
 }
-std::uint32_t cap::measureTicks(bool discharge, std::uint32_t timeoutTicks) noexcept
+std::uint32_t cap::measureTicks(bool discharge, std::uint32_t timeoutTicks)
 {
 	std::uint32_t ticks;
 
@@ -274,7 +266,7 @@ std::uint32_t cap::measureTicks(bool discharge, std::uint32_t timeoutTicks) noex
 
 	return ticks;
 }
-bool cap::measureTicks_async(std::uint32_t & ticks, bool discharge) noexcept
+bool cap::measureTicks_async(std::uint32_t & ticks, bool discharge)
 {
 	auto ret = cap::calData.measureDone;
 	if (ret)
@@ -291,7 +283,7 @@ bool cap::measureTicks_async(std::uint32_t & ticks, bool discharge) noexcept
 
 	return ret;
 }
-void cap::stopMeasurement() noexcept
+void cap::stopMeasurement()
 {
 	// Disable timer
 	TC4->COUNT32.CTRLA.bit.ENABLE = 0;
@@ -299,7 +291,7 @@ void cap::stopMeasurement() noexcept
 	// Disable RC interrupt
 	disableInterrupt(digitalPinToInterrupt(CAP_RC_DETECT));
 }
-bool cap::isDischarged() noexcept
+bool cap::isDischarged()
 {
 	const auto sample = esrcap::autoScaleGetSample(
 		cap::calData.getSample,
@@ -309,13 +301,13 @@ bool cap::isDischarged() noexcept
 	);
 	return sample < fp::to(CAP_DISCHARGE_THRESHOLD);
 }
-void cap::discharge() noexcept
+void cap::discharge()
 {
 	digitalWrite(CAP_CHARGE_OUT,    0);
 	digitalWrite(CAP_DISCHARGE_OUT, 1);
 }
 
-std::int32_t cap::calcCapacitance_fpd(std::int32_t ticks) noexcept
+std::int32_t cap::calcCapacitance_fpd(std::int32_t ticks)
 {
 	ticks -= CAP_TIME_CONSTANT_OFFSET;
 	ticks = fp::mul(ticks, fp::to(CAP_TIME_CONSTANT_COEF));

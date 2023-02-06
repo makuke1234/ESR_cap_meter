@@ -12,39 +12,39 @@
 
 namespace fp
 {
-	constexpr std::int32_t to(double num) noexcept
+	constexpr std::int32_t to(double num)
 	{
 		return std::int32_t(double(FPD_FACTOR) * num);
 	}
-	constexpr std::int32_t to(std::int32_t num) noexcept
+	constexpr std::int32_t to(std::int32_t num)
 	{
 		return FPD_FACTOR * num;
 	}
-	constexpr double fromD(std::int32_t num) noexcept
+	constexpr double fromD(std::int32_t num)
 	{
 		return double(num) / double(FPD_FACTOR);
 	}
-	constexpr std::int32_t fromI(std::int32_t num) noexcept
+	constexpr std::int32_t fromI(std::int32_t num)
 	{
 		return num / FPD_FACTOR;
 	}
 
-	constexpr std::int64_t mul(std::int32_t a, std::int32_t b) noexcept
+	constexpr std::int64_t mul(std::int32_t a, std::int32_t b)
 	{
 		return (std::int64_t(a) * std::int64_t(b)) / std::int64_t(FPD_FACTOR);
 	}
-	constexpr std::int32_t div(std::int64_t a, std::int32_t b) noexcept
+	constexpr std::int32_t div(std::int64_t a, std::int32_t b)
 	{
 		return std::int32_t((a * std::int64_t(FPD_FACTOR)) / std::int64_t(b));
 	}
-	constexpr std::int32_t muldiv(std::int32_t a, std::int32_t b, std::int32_t c) noexcept
+	constexpr std::int32_t muldiv(std::int32_t a, std::int32_t b, std::int32_t c)
 	{
 		return std::int32_t( (std::int64_t(a) * std::int64_t(b)) / std::int64_t(c) );
 	}
 
-	constexpr std::int32_t dec(std::int32_t fpd) noexcept
+	constexpr std::int32_t dec(std::int32_t fpd)
 	{
 		return fpd / FPD_FACTOR;
 	}
-	char * frac(std::int32_t fpd, std::uint8_t accuracy) noexcept;
+	char * frac(std::int32_t fpd, std::uint8_t accuracy);
 }

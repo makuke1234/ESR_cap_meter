@@ -86,6 +86,6 @@ void btnISR();
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 int SerialPrintf(const char * format, ...);
 
-std::uint32_t getSampleInterfaceEsr(bool precisemode) noexcept;
-std::uint32_t getSampleInterfaceCap(bool precisemode) noexcept;
-void setGainInterface(std::uint8_t gain) noexcept;
+std::uint32_t getSampleInterfaceEsr(bool precisemode);
+std::uint32_t getSampleInterfaceCap(bool precisemode);
+void setGainInterface(std::uint8_t gain);

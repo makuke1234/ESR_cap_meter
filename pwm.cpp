@@ -6,13 +6,6 @@ std::uint8_t pwm::portPinNum[pwm::dutyCycleArrSize];
 void pwm::init(std::uint32_t frequency)
 {
 	// Initialize TCC0 clocks
-	PM->APBCMASK.reg |= PM_APBCMASK_TCC0;
-
-	/*GCLK->CLKCTRL.reg =
-		GCLK_CLKCTRL_CLKEN |
-		GCLK_CLKCTRL_GEN_GCLK0 |  // 48 MHz main clock as clock source
-		GCLK_CLKCTRL_ID_TCC0_TCC1;
-	while (GCLK->STATUS.bit.SYNCBUSY);*/
 	clk::initTmr(clk::tmr::tTCC0, GCLK_CLKCTRL_GEN_GCLK0_Val, 48000000U);
 
 	TCC0->WAVE.reg |= TCC_WAVE_WAVEGEN_NPWM;

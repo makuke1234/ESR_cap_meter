@@ -1,3 +1,4 @@
+#include "clocks.hpp"
 #include "esrCap.hpp"
 
 esr::MeterCalData esr::calData;
@@ -201,12 +202,7 @@ void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 	pinMode(CAP_DISCHARGE_OUT, OUTPUT);
 
 	// Configure timer clock source
-
-	GCLK->CLKCTRL.reg =
-		GCLK_CLKCTRL_CLKEN |
-		GCLK_CLKCTRL_GEN_GCLK0 |  // 48 MHz main clock as clock source
-		GCLK_CLKCTRL_ID_TC4_TC5;
-	while (GCLK->STATUS.bit.SYNCBUSY);
+	clk::initTmr(clk::tmr::tTC4, GCLK_CLKCTRL_GEN_GCLK0_Val, 48000000U);
 
 	TC4->COUNT32.CTRLA.reg |=
 		TC_CTRLA_PRESCALER_DIV1 |

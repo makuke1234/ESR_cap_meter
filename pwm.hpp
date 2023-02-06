@@ -1,6 +1,7 @@
 #pragma once
 
 #include "portAccess.hpp"
+#include "clocks.hpp"
 
 #include <vector>
 #include <cstdint>

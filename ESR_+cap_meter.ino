@@ -35,11 +35,11 @@ void setup()
 	if (connected)
 	{
 		SerialUSB.println("Serial connection initialized.");
-		setrgb(0, 255, 0);
+		setrgb(0, 255, 10);
 	}
 	else
 	{
-		setrgb(255, 0, 0);
+		setrgb(255, 25, 0);
 	}
 
 	SerialUSB.print("Initializing button...");
@@ -232,15 +232,15 @@ int SerialPrintf(const char * format, ...)
 	return nchars;
 }
 
-std::uint32_t getSampleInterfaceEsr(bool precisemode) noexcept
+std::uint32_t getSampleInterfaceEsr(bool precisemode)
 {
 	return adc::getVolts_fpd(adc::sample(adc::Channel::OutAmp, precisemode));
 }
-std::uint32_t getSampleInterfaceCap(bool precisemode) noexcept
+std::uint32_t getSampleInterfaceCap(bool precisemode)
 {
 	return adc::getVolts_fpd(adc::sample(adc::Channel::Out, precisemode));
 }
-void setGainInterface(std::uint8_t gain) noexcept
+void setGainInterface(std::uint8_t gain)
 {
 	adc::setGain(adc::Gain(gain));
 }

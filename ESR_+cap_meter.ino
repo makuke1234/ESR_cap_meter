@@ -29,12 +29,15 @@ void setup()
 	
 	SerialUSB.begin(DEFAULT_BAUDRATE);
 	bool connected = false;
-	auto sm = millis() + 500;
-	while (!heartbeat::isConnected() && (millis() < sm));
-	if (!digitalRead(PUSH_BTN) && heartbeat::isConnected())
+	if (!digitalRead(PUSH_BTN))
+	{
+		const auto sm = millis() + 500;
+		while (!heartbeat::isConnected() && (millis() < sm));
+	}
+	if (heartbeat::isConnected())
 	{
 		setrgb(0, 25, 127);
-		sm = millis() + 5000;
+		const auto sm = millis() + 5000;
 		while (!SerialUSB && (millis() < sm));
 		connected = SerialUSB != 0;
 	}

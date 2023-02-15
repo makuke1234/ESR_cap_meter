@@ -188,6 +188,11 @@ void loop()
 	
 	SerialUSB.println();
 
+	if (heartbeat::isConnected())
+	{
+		communicationLoop();
+	}
+
 	while (!s_int && ((millis() - last) < 25))
 	{
 		if (!digitalRead(PUSH_BTN))
@@ -248,4 +253,53 @@ std::uint32_t getSampleInterfaceCap(bool precisemode)
 void setGainInterface(std::uint8_t gain)
 {
 	adc::setGain(adc::Gain(gain));
+}
+
+bool comRead(char * buf, std::uint8_t & bufidx)
+{
+	if (!SerialUSB.available())
+	{
+		return false;
+	}
+
+	buf[bufidx] = SerialUSB.read();
+	auto & ch = buf[bufidx];
+	++bufidx;
+
+	if (bufidx >= SERIAL_READ_BUFSIZE)
+	{
+		bufidx = 0;
+	}
+
+	if ((ch == '\n') || (ch == '\r') || (ch == '\0'))
+	{
+		ch = '\0';
+		bufidx = 0;
+		return (buf[0] != '\0');
+	}
+
+	buf[SERIAL_READ_BUFSIZE - 1] = '\0';
+	return false;
+}
+void communicationLoop()
+{
+	static char buf[SERIAL_READ_BUFSIZE];
+	static std::uint8_t bufidx = 0;
+
+	// Try to receive data
+	const auto read = comRead(buf, bufidx);
+	if (!read)
+	{
+		return;
+	}
+	
+	// parse contents
+	if (!std::strcmp(buf, "hello"))
+	{
+		SerialUSB.println("Hello from us too!");
+	}
+	else if (!std::strcmp(buf, "bye"))
+	{
+		SerialUSB.println("Where you goin'?");
+	}
 }

@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstdint>
+#include <cstring>
 
 // MCU includes
 #include <Arduino.h>
@@ -53,6 +54,8 @@
 
 // USB serial printf binding buffer length
 #define SERIAL_PRINTF_BUFSIZE 128
+// Serial data receive buffer length
+#define SERIAL_READ_BUFSIZE   32
 
 // ADC config, ADC uses internal 8MHz OSC as clock source
 #define ADC_RESOLUTION_BITS      16
@@ -89,3 +92,6 @@ int SerialPrintf(const char * format, ...);
 std::uint32_t getSampleInterfaceEsr(bool precisemode);
 std::uint32_t getSampleInterfaceCap(bool precisemode);
 void setGainInterface(std::uint8_t gain);
+
+bool comRead(char * buf, std::uint8_t & bufidx);
+void communicationLoop();

@@ -84,6 +84,18 @@
 #define CAP_DISCHARGE_THRESHOLD  0.01      // Threshold, under which the capacitor is determined to be completely discharged
 #define CAP_TIMEOUT_TICKS        4800000U  // Threshold, over which the measurement will time out
 
+// Data structures
+struct State
+{
+	bool debug:1;
+	bool btnState:1;
+	bool intOccur:1;
+
+	constexpr State()
+		: debug(false), btnState(false), intOccur(false)
+	{}
+};
+
 // Function declarations
 void btnISR();
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);

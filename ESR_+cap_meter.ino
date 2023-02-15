@@ -5,7 +5,7 @@
 #include "pwm.hpp"
 #include "usbheartbeat.hpp"
 
-static bool s_int = false, s_btnState = false;
+static State state;
 
 void setup()
 {
@@ -128,12 +128,12 @@ void loop()
 	static long last = 0;
 	static bool measure = false;
 
-	if (s_int)
+	if (state.intOccur)
 	{
 		static std::uint16_t presses = 0, releases = 0;
 
-		const bool localPress = s_btnState;
-		s_int = false;
+		const bool localPress = state.btnState;
+		state.intOccur = false;
 		
 		// Interrupt handling code
 	}
@@ -173,29 +173,32 @@ void loop()
 	disp::lcd.print(temp, 2);
 	disp::lcd.print(" deg. C");
 
-	SerialUSB.print("Ref: ");
-	SerialUSB.print(adc::calData.ref1VReal, 6);
-	SerialUSB.print("V; Supply: ");
-	SerialUSB.print(supply, 4);
-	
-	SerialUSB.print("V; Gain 0.5x: ");
-	auto gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)];	
-	SerialUSB.print(fp::fromD(gain), 5);
+	if (state.debug)
+	{
+		SerialUSB.print("Ref: ");
+		SerialUSB.print(adc::calData.ref1VReal, 6);
+		SerialUSB.print("V; Supply: ");
+		SerialUSB.print(supply, 4);
+		
+		SerialUSB.print("V; Gain 0.5x: ");
+		auto gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)];	
+		SerialUSB.print(fp::fromD(gain), 5);
 
-	SerialUSB.print("; Gain 2x: ");
-	gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)];
-	SerialUSB.print(fp::fromD(gain), 5);
-	
-	SerialUSB.println();
+		SerialUSB.print("; Gain 2x: ");
+		gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)];
+		SerialUSB.print(fp::fromD(gain), 5);
+		
+		SerialUSB.println();
+	}
 
 	if (heartbeat::isConnected())
 	{
 		communicationLoop();
 	}
 
-	while (!s_int && ((millis() - last) < 25))
+	while (!state.intOccur && ((millis() - last) < 25))
 	{
-		if (!digitalRead(PUSH_BTN))
+		if (!digitalRead(PUSH_BTN) || (heartbeat::isConnected() && Serial.available()) )
 		{
 			break;
 		}
@@ -207,18 +210,18 @@ void loop()
 void btnISR()
 {
 	static long lastmillis = 0;
-	const bool state = digitalRead(PUSH_BTN);
+	const bool state_ = digitalRead(PUSH_BTN);
 	const auto mil = millis(), delta = mil - lastmillis;
 	lastmillis = mil;
 
-	if (!state && (delta < BTN_DEBOUNCE_THRESHOLD_MS))
+	if (!state_ && (delta < BTN_DEBOUNCE_THRESHOLD_MS))
 	{
 		return;
 	}
 
-	const bool val = s_btnState;
-	s_btnState = !state;
-	s_int = (s_btnState != val);
+	const bool val = state.btnState;
+	state.btnState = !state_;
+	state.intOccur = (state.btnState != val);
 }
 
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b)
@@ -301,5 +304,14 @@ void communicationLoop()
 	else if (!std::strcmp(buf, "bye"))
 	{
 		SerialUSB.println("Where you goin'?");
+	}
+	else if (!std::strcmp(buf, "debug"))
+	{
+		SerialUSB.println("Toggling debug mode...");
+		state.debug ^= 1;
+	}
+	else
+	{
+		SerialUSB.println("Unknown command!");
 	}
 }

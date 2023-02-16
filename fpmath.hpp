@@ -36,11 +36,11 @@ namespace fp
 	}
 	constexpr std::int32_t div(std::int64_t a, std::int32_t b)
 	{
-		return std::int32_t( (a * std::int64_t(FPD_FACTOR) + (b >> 1)) / std::int64_t(b));
+		return std::int32_t( (a * std::int64_t(FPD_FACTOR) + std::int64_t(b >> 1)) / std::int64_t(b));
 	}
 	constexpr std::int32_t muldiv(std::int32_t a, std::int32_t b, std::int32_t c)
 	{
-		return std::int32_t( (std::int64_t(a) * std::int64_t(b) + (c >> 1)) / std::int64_t(c) );
+		return std::int32_t( (std::int64_t(a) * std::int64_t(b) + std::int64_t(c >> 1)) / std::int64_t(c) );
 	}
 
 	constexpr std::int32_t dec(std::int32_t fpd)

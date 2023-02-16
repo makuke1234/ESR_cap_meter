@@ -5,6 +5,9 @@
 #include <cstdarg>
 #include <cstdint>
 #include <cstring>
+#include <cmath>
+#include <cassert>
+#include <limits>
 
 // MCU includes
 #include <Arduino.h>
@@ -107,3 +110,16 @@ void setGainInterface(std::uint8_t gain);
 
 bool comRead(char * buf, std::uint8_t & bufidx);
 void communicationLoop();
+
+// Printing function
+enum class Info : std::uint8_t
+{
+	Temp,
+	TempAcc,
+	Ref,
+	Supply,
+	Gain_0x5,
+	Gain_2x
+};
+
+void printInfo(Info type, std::uint8_t decPlaces = 0, float uData = std::numeric_limits<float>::quiet_NaN());

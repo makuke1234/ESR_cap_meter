@@ -94,14 +94,8 @@ void setup()
 		}
 	}
 
-	const auto temp = adc::getTemp(adc::sample(adc::Channel::IntTemp, true));
-	SerialUSB.print("Temperature: ");
-	SerialUSB.print(temp);
-	SerialUSB.println(" deg. C");
-
-	SerialUSB.print("Reference voltage: ");
-	SerialUSB.print(adc::calData.ref1VReal, 6);
-	SerialUSB.println("V");
+	printInfo(Info::TempAcc);
+	printInfo(Info::Ref);
 
 	SerialUSB.print("Initializing ESR measuring...");
 	esr::init(
@@ -165,8 +159,6 @@ void loop()
 	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 	//adc::calibrate(tempSample, true);
 	const auto temp = adc::getTemp(tempSample);
-	const auto supply = adc::getSupply();
-
 
 	disp::lcd.setCursor(0, 1);
 	disp::lcd.print("Temp: ");
@@ -175,20 +167,13 @@ void loop()
 
 	if (state.debug)
 	{
-		SerialUSB.print("Ref: ");
-		SerialUSB.print(adc::calData.ref1VReal, 6);
-		SerialUSB.print("V; Supply: ");
-		SerialUSB.print(supply, 4);
-		
-		SerialUSB.print("V; Gain 0.5x: ");
-		auto gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)];	
-		SerialUSB.print(fp::fromD(gain), 5);
+		printInfo(Info::Temp, 2, temp);
+		printInfo(Info::Ref);
+		printInfo(Info::Supply);
 
-		SerialUSB.print("; Gain 2x: ");
-		gain = adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)];
-		SerialUSB.print(fp::fromD(gain), 5);
-		
-		SerialUSB.println();
+		printInfo(Info::Gain_0x5);
+		printInfo(Info::Gain_2x);
+		Serial.println();
 	}
 
 	if (heartbeat::isConnected())
@@ -297,21 +282,91 @@ void communicationLoop()
 	}
 	
 	// parse contents
-	if (!std::strcmp(buf, "hello"))
+	if (!std::strcmp(buf, "echo"))
 	{
-		SerialUSB.println("Hello from us too!");
-	}
-	else if (!std::strcmp(buf, "bye"))
-	{
-		SerialUSB.println("Where you goin'?");
+		SerialUSB.println("Echo");
 	}
 	else if (!std::strcmp(buf, "debug"))
 	{
 		SerialUSB.println("Toggling debug mode...");
 		state.debug ^= 1;
 	}
+	else if (!std::strcmp(buf, "temp"))
+	{
+		printInfo(Info::TempAcc);
+	}
+	else if (!std::strcmp(buf, "ref"))
+	{
+		printInfo(Info::Ref);
+	}
+	else if (!std::strcmp(buf, "supply"))
+	{
+		printInfo(Info::Supply);
+	}
 	else
 	{
 		SerialUSB.println("Unknown command!");
 	}
+}
+
+
+void printInfo(Info type, std::uint8_t decPlaces, float uData)
+{
+	static const char * prelist[] = {
+		"Temperature: ",
+		"Temperature (slow): ",
+		"Reference: ",
+		"Supply: ",
+		"Gain 0.5x: ",
+		"Gain 2x: ",
+	};
+	static const char * postlist[] = {
+		" deg. C",
+		" deg. C",
+		"V",
+		"V",
+		"",
+		"",
+	};
+
+	const auto ptype = std::underlying_type<Info>::type(type);
+	SerialUSB.print(prelist[ptype]);
+
+	float data;
+	if (std::isnan(uData))
+	{
+		switch (type)
+		{
+		case Info::Temp:
+		case Info::TempAcc:
+			data = adc::getTemp(adc::sample(adc::Channel::IntTemp, type == Info::TempAcc));
+			decPlaces = !decPlaces ? 2 : decPlaces;
+			break;
+		case Info::Ref:
+			data = adc::calData.ref1VReal;
+			decPlaces = !decPlaces ? 6 : decPlaces;
+			break;
+		case Info::Supply:
+			data = adc::getSupply();
+			decPlaces = !decPlaces ? 4 : decPlaces;
+			break;
+		case Info::Gain_0x5:
+			data = fp::fromD(adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g0_5x)]);
+			decPlaces = !decPlaces ? 4 : decPlaces;
+			break;
+		case Info::Gain_2x:
+			data = fp::fromD(adc::calData.gainCal_FPD[std::uint8_t(adc::Gain::g2x)]);
+			decPlaces = !decPlaces ? 4 : decPlaces;
+			break;
+		default:
+			assert(!"Unknown type!");
+		}
+	}
+	else
+	{
+		data = uData;
+	}
+
+	SerialUSB.print(data, decPlaces);
+	SerialUSB.println(postlist[ptype]);
 }

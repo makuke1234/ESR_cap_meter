@@ -33,8 +33,8 @@
 #define A7  9
 #define A8  4
 #define A9  3
-#define A10 2
-#define A11 1
+#define A10 1
+#define A11 0
 
 // Temperature
 #define ADC_CAL_EXTRACT_IMPL_(value, shift, mask) ((shift ? (value >> shift) : value) & mask)

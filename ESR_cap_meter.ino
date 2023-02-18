@@ -25,7 +25,7 @@ void setup()
 
 	pinMode(PUSH_BTN, INPUT);
 	// Attach interrupt to the button
-	//attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
+	attachInterrupt(PUSH_BTN, &btnISR, CHANGE);
 	
 	SerialUSB.begin(DEFAULT_BAUDRATE);
 	bool connected = false;
@@ -104,9 +104,6 @@ void setup()
 	);
 	SerialUSB.println(" OK");
 
-	esr::outputEnable();
-	esr::setFrequency(1000000);
-
 	SerialUSB.print("Initializing capacitance measuring...");
 	cap::init(
 		&getSampleInterfaceCap,
@@ -120,7 +117,7 @@ void setup()
 void loop()
 {
 	static long last = 0;
-	static bool measure = false;
+	static bool measureCap = false, esrmode = true, capprevmeas = false;
 
 	if (state.intOccur)
 	{
@@ -130,44 +127,138 @@ void loop()
 		state.intOccur = false;
 		
 		// Interrupt handling code
-	}
-	if (!measure && !digitalRead(PUSH_BTN))
-	{
-		setrgb(255, 0, 255);
-		delay(100);
-		while (!digitalRead(PUSH_BTN));
-		cap::startMeasureMent_async();
-		measure = true;
+
+		if (!localPress)
+		{
+			cap::zeroReading();
+		}
 	}
 
-	static std::uint32_t ticks = 0;
-	if (measure && cap::measureTicks_async(ticks, false))
+	// Check for esr overload
+	if (esrmode)
 	{
-		setrgb(0, 255, 0);
-		measure = false;
+		esr::outputEnable();
+
+		bool ol = false;
+		auto esr = esr::measureESR(ol);
+		ol |= (esr > 100.0) ? true : false;
+
+		disp::lcd.setCursor(0, 1);
+		disp::lcd.print("ESR: ");
+		if (!ol)
+		{
+			if (!capprevmeas)
+			{
+				esr::outputEnable(false);
+
+				esrmode = false;
+				measureCap = false;
+			}
+
+			// Display ESR
+			disp::lcd.print(esr, 2);
+			disp::lcd.print(" ohm     ");
+		}
+		else
+		{
+			disp::lcd.print("OL        ");
+			capprevmeas = false;
+		}
 	}
-	else if (measure)
+	if (!esrmode)
 	{
-		ticks = TC4->COUNT32.COUNT.reg;
+		// Measure capacitance
+
+		if (!measureCap)
+		{
+			// Check if capacitor is discharged
+			if (cap::isDischarged())
+			{
+				cap::startMeasureMent_async();
+				measureCap = true;
+			}
+			else
+			{
+				cap::discharge();
+				disp::lcd.setCursor(0, 0);
+				disp::lcd.print("Cap: ");
+				disp::lcd.print("discharging");
+			}
+		}
+		else
+		{
+			std::uint32_t ticks;
+			if (cap::measureTicks_async(ticks))
+			{
+				auto cap = cap::calcCapacitance_fpd(ticks);
+				auto fcap = double(cap) / 1000.0;
+				fcap = (fcap < 0.0) ? 0.0 : fcap;
+
+				std::uint8_t range;
+				if (fcap > 999999999.9)
+				{
+					range = 4;
+					fcap /= 1000000000.0;
+				}
+				if (fcap > 999999.9)
+				{
+					range = 3;
+					fcap /= 1000000.0;
+				}
+				else if (fcap > 999.9)
+				{
+					range = 2;
+					fcap /= 1000.0;
+				}
+				else if (fcap > 0.999)
+				{
+					range = 1;
+				}
+				else
+				{
+					range = 0;
+					fcap *= 1000.0;
+				}
+
+				fcap += 0.05;
+
+				disp::lcd.setCursor(0, 0);
+				disp::lcd.print("Cap: ");
+				disp::lcd.print(fcap, 0);
+
+				static const char * ranges[] = {
+					" pF",
+					" nF",
+					" uF",
+					" mF",
+					" F"
+				};
+
+				disp::lcd.print(ranges[range]);
+				disp::lcd.print("       ");
+
+				capprevmeas = true;
+				measureCap = false;
+				esrmode = true;
+				cap::stop();
+			}
+			else if (TC4->COUNT32.COUNT.reg > CAP_TIMEOUT_TICKS)
+			{
+				capprevmeas = true;
+				measureCap = false;
+				esrmode = true;
+				cap::stop();
+				disp::lcd.setCursor(0, 0);
+				disp::lcd.print("Cap: OL         ");
+			}
+		}
 	}
-	double fticks = double(ticks) / 48000000.0;
-	disp::lcd.setCursor(0, 0);
-	disp::lcd.print("Time: ");
-	disp::lcd.print(fticks, 8);
-	disp::lcd.print("          ");
-
-	const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
-	//adc::calibrate(tempSample, true);
-	const auto temp = adc::getTemp(tempSample);
-
-	disp::lcd.setCursor(0, 1);
-	disp::lcd.print("Temp: ");
-	disp::lcd.print(temp, 2);
-	disp::lcd.print(" deg. C");
 
 	if (state.debug)
 	{
-		printInfo(Info::Temp, 2, temp);
+		//const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
+		//adc::calibrate(tempSample, true);
+		printInfo(Info::Temp);
 		printInfo(Info::Ref);
 		printInfo(Info::Supply);
 
@@ -181,12 +272,12 @@ void loop()
 		communicationLoop();
 	}
 
-	while (!state.intOccur && ((millis() - last) < 25))
+	while (!state.intOccur && ((millis() - last) < 250))
 	{
-		if (!digitalRead(PUSH_BTN) || (heartbeat::isConnected() && Serial.available()) )
+		/*if (!digitalRead(PUSH_BTN)/* || (heartbeat::isConnected() && Serial.available()))
 		{
 			break;
-		}
+		}*/
 	}
 	last = millis();
 }
@@ -310,7 +401,7 @@ void communicationLoop()
 }
 
 
-void printInfo(Info type, std::uint8_t decPlaces, float uData)
+void printInfo(Info type, std::uint8_t decPlaces, bool hasData, float uData)
 {
 	static const char * prelist[] = {
 		"Temperature: ",
@@ -333,7 +424,7 @@ void printInfo(Info type, std::uint8_t decPlaces, float uData)
 	SerialUSB.print(prelist[ptype]);
 
 	float data;
-	if (std::isnan(uData))
+	if (!hasData)
 	{
 		switch (type)
 		{

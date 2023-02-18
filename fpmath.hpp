@@ -45,7 +45,7 @@ namespace fp
 
 	constexpr std::int32_t dec(std::int32_t fpd)
 	{
-		return (fpd + FPD_FRAC) / FPD_FACTOR;
+		return fpd / FPD_FACTOR;
 	}
 	char * frac(std::int32_t fpd, std::uint8_t accuracy);
 }

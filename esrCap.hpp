@@ -31,10 +31,7 @@ namespace esr
 			std::int32_t(ESR_DETECTOR_RDIV1 * 1000.0),
 			std::int32_t( (ESR_DETECTOR_RDIV1 + ESR_DETECTOR_RDIV2) * 1000.0 )
 		);
-		static constexpr std::int32_t vdiv_FPD = fp::div(
-			std::int32_t(ESR_11X_RDIV1 * 1000.0),
-			std::int32_t( (ESR_11X_RDIV1 + ESR_11X_RDIV2) * 1000.0 )
-		);
+		static constexpr std::int32_t vdiv_FPD = fp::to(1.0);
 
 		std::int32_t adcOffsetVolts_FPD[6] = { 0 };
 		std::int32_t outputOffset_FPD = 0;
@@ -49,7 +46,7 @@ namespace esr
 
 	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc);
 
-	void setFrequency(std::uint32_t frequency);
+	void setFrequency(std::uint32_t frequency, bool enableOut = false);
 	void outputEnable(bool enable = true);
 
 	bool zeroReading();
@@ -87,6 +84,9 @@ namespace cap
 	void stopMeasurement();
 	bool isDischarged();
 	void discharge();
+	void stop();
+
+	void zeroReading();
 
 	// Calculate capacitance in nF
 	std::int32_t calcCapacitance_fpd(std::int32_t ticks);

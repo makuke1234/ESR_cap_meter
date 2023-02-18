@@ -1,3 +1,4 @@
+#include "fpmath.hpp"
 #include "clocks.hpp"
 #include "esrCap.hpp"
 
@@ -13,7 +14,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 {
 	auto sample = sampleFunc(precisemode);
 
-	std::int32_t gain = fp::div(fp::to(1.0), sample);
+	std::int32_t gain = fp::div(fp::to(1.0), !sample ? 1 : sample);
 	gain -= fp::to(0.2);
 
 	if (gain < fp::to(1.0))
@@ -56,6 +57,9 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 	OutMode(ESR_PWM_OUT_LOW);
 	OutMode(ESR_PWM_OUT_HIGH);
 
+	OutClr(ESR_PWM_OUT_LOW);
+	OutClr(ESR_PWM_OUT_HIGH);
+
 	// Initialize timer clocks
 
 	std::uint32_t tmrFreq = 96000000U;
@@ -87,7 +91,7 @@ void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 	esr::setFrequency(ESR_DEFAULT_FREQUENCY);
 }
 
-void esr::setFrequency(std::uint32_t frequency)
+void esr::setFrequency(std::uint32_t frequency, bool enableOut)
 {
 	// Calculate ticks from frequency
 	const auto ticks = 48000000U / frequency;
@@ -104,7 +108,10 @@ void esr::setFrequency(std::uint32_t frequency)
 	TCC2->CCB[ESR_PWM_HIGH_CHANNEL].reg = ticks2 - 2U;
 	while (TCC2->SYNCBUSY.vec.CCB);
 
-	esr::outputEnable(true);
+	if (enableOut)
+	{
+		esr::outputEnable(true);
+	}
 }
 void esr::outputEnable(bool enable)
 {
@@ -146,7 +153,7 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 	auto gain = esr::calData.gain;
 
 	auto olvolts = (!gain) ? (sample >> 1) : ( (gain == 1) ? sample : (sample << (gain - 1)) );
-	overload = (olvolts > fp::to(0.85));
+	overload = (olvolts > fp::to(0.95));
 	if (overload)
 	{
 		return INT32_MAX;
@@ -155,6 +162,8 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 
 	// Remove amplifier offset to the input voltage
 	sample -= fp::to(ESR_AMP_OFFSET);
+	SerialUSB.print("Voltage: ");
+	SerialUSB.println(fp::fromD(sample), 3);
 
 	return esr::calcESR_fpd(sample);
 }
@@ -182,7 +191,13 @@ std::int32_t esr::calcESRDivider_fpd(std::int32_t voltage)
 }
 std::int32_t esr::calcESR_fpd(std::int32_t voltage)
 {
-	std::int32_t r = fp::div(fp::to(ESR_R_OUT), esr::calcESRDivider_fpd(voltage) - fp::to(1.0));
+	auto divisor = esr::calcESRDivider_fpd(voltage) - fp::to(1.0);
+	if (!divisor)
+	{
+		return INT32_MAX;
+	}
+
+	std::int32_t r = fp::div(fp::to(ESR_R_OUT), divisor);
 	r -= esr::calData.outputOffset_FPD;
 
 	return r;
@@ -199,8 +214,11 @@ void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 
 	pinMode(CAP_OUT, INPUT);
 	pinMode(CAP_RC_DETECT, INPUT);
-	pinMode(CAP_CHARGE_OUT, OUTPUT);
-	pinMode(CAP_DISCHARGE_OUT, OUTPUT);
+	OutMode(CAP_CHARGE_OUT);
+	OutMode(CAP_DISCHARGE_OUT);
+
+	OutClr(CAP_CHARGE_OUT);
+	OutClr(CAP_DISCHARGE_OUT);
 
 	// Configure timer clock source
 	clk::initTmr(clk::tmr::tTC4, GCLK_CLKCTRL_GEN_GCLK0_Val, 48000000U);
@@ -225,7 +243,7 @@ static void capMeasurementISR()
 void cap::startMeasureMent_async()
 {
 	// Disable discharge
-	//digitalWrite(CAP_DISCHARGE_OUT, 0);
+	OutClr(CAP_DISCHARGE_OUT);
 
 	cap::calData.measureDone = false;
 
@@ -243,7 +261,7 @@ void cap::startMeasureMent_async()
 	while (TC4->COUNT32.STATUS.bit.SYNCBUSY);
 
 	// Start charging
-	//digitalWrite(CAP_CHARGE_OUT, 1);
+	OutSet(CAP_CHARGE_OUT);
 }
 std::uint32_t cap::measureTicks(bool discharge, std::uint32_t timeoutTicks)
 {
@@ -298,16 +316,28 @@ bool cap::isDischarged()
 }
 void cap::discharge()
 {
-	digitalWrite(CAP_CHARGE_OUT,    0);
-	digitalWrite(CAP_DISCHARGE_OUT, 1);
+	OutClr(CAP_CHARGE_OUT);
+	OutSet(CAP_DISCHARGE_OUT);
+}
+void cap::stop()
+{
+	OutClr(CAP_CHARGE_OUT);
+	OutClr(CAP_DISCHARGE_OUT);
 }
 
 std::int32_t cap::calcCapacitance_fpd(std::int32_t ticks)
 {
-	ticks -= CAP_TIME_CONSTANT_OFFSET;
+	ticks -= cap::calData.offsetTicks;
 	ticks = fp::mul(ticks, fp::to(CAP_TIME_CONSTANT_COEF));
 
-	// C = (ticks * 1e9) / (R * ticks_in_second)
-	std::int32_t cap = fp::muldiv(ticks, 1000000000, std::int32_t(CAP_R_SERIES * 48000000U));
+	// C = (ticks * 1e12/10000) / (R * ticks_in_second/10000)
+	std::int32_t cap = fp::muldiv(ticks, std::int32_t(1000000000000ULL / 10000ULL), std::int32_t(CAP_R_SERIES * (48000000U / 10000U)));
+	cap -= cap::calData.offsetTicks;
+
 	return cap;
+}
+
+void cap::zeroReading()
+{
+	cap::calData.offsetTicks = cap::calData.measureTicks;
 }

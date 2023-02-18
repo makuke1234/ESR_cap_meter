@@ -20,11 +20,9 @@ rout = 10
 freq = 100000
 gr1 = 3.3
 gr2 = 47+10
-vOffset = 0.154
-outOffset = -0.004
+vOffset = -0.4
+outOffset = 0.0
 
-vdiv1 = 10000
-vdiv2 = 15000
 vref = 1.0
 adcres = 12
 
@@ -34,7 +32,7 @@ adcmaxcount = pow(2, adcres) - 1
 gOffset = vBurden * (gr1/(gr1+gr2))
 
 def calcvolts(counts):
-    v = ((vdiv1 + vdiv2) * vref * counts) / (adcmaxcount * vdiv1)
+    v = (vref * counts) / (adcmaxcount * vdiv1)
     return v
 
 def ampl(volts):

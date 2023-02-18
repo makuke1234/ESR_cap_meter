@@ -42,7 +42,7 @@ namespace esr
 
 		bool precisemode = false;
 	};
-	extern MeterCalData calData;
+	extern volatile MeterCalData calData;
 
 	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc);
 
@@ -74,7 +74,7 @@ namespace cap
 		std::uint32_t measureTicks = 0;
 		bool measureDone = false;
 	};
-	extern MeterCalData calData;
+	extern volatile MeterCalData calData;
 
 	void init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc);
 

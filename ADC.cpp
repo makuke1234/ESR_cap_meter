@@ -487,7 +487,10 @@ void adc::calibrate(std::uint16_t tempSample, bool fullCal)
 float adc::getTemp(std::uint16_t tempSample)
 {
 	const auto & lr = adc::calData.lr;
-	return lr.tempR + ((lr.tempH - lr.tempR) * (adc::getVolts(tempSample) - lr.VADCR)/(lr.VADCH - lr.VADCR));
+	const auto volts = adc::getVolts(tempSample);
+	SerialUSB.print("Temp volts: ");
+	SerialUSB.println(volts);
+	return lr.tempR + ((lr.tempH - lr.tempR) * (volts - lr.VADCR)/(lr.VADCH - lr.VADCR));
 }
 
 float adc::getSupply(bool preciseMeas)

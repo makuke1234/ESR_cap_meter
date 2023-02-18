@@ -5,7 +5,7 @@
 #include "pwm.hpp"
 #include "usbheartbeat.hpp"
 
-static State state;
+static volatile State state;
 
 void setup()
 {
@@ -156,7 +156,7 @@ void loop()
 			}
 
 			// Display ESR
-			disp::lcd.print(esr, 2);
+			disp::lcd.print(esr, 3);
 			disp::lcd.print(" ohm     ");
 		}
 		else
@@ -258,7 +258,7 @@ void loop()
 	{
 		//const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 		//adc::calibrate(tempSample, true);
-		printInfo(Info::Temp);
+		printInfo(Info::TempAcc);
 		printInfo(Info::Ref);
 		printInfo(Info::Supply);
 
@@ -424,13 +424,17 @@ void printInfo(Info type, std::uint8_t decPlaces, bool hasData, float uData)
 	SerialUSB.print(prelist[ptype]);
 
 	float data;
+	std::uint16_t sample = 0;
 	if (!hasData)
 	{
 		switch (type)
 		{
 		case Info::Temp:
 		case Info::TempAcc:
-			data = adc::getTemp(adc::sample(adc::Channel::IntTemp, type == Info::TempAcc));
+			sample = adc::sample(adc::Channel::IntTemp, type == Info::TempAcc);
+			SerialUSB.print("Temp sample: ");
+			SerialUSB.println(sample);
+			data = adc::getTemp(sample);
 			decPlaces = !decPlaces ? 2 : decPlaces;
 			break;
 		case Info::Ref:

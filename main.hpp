@@ -76,7 +76,7 @@
 #define ESR_DETECTOR_RDIV1 3300.0               // 3.3k
 #define ESR_DETECTOR_RDIV2 (47000.0 + 10000.0)  // 47k + 10k
 
-#define ESR_DEFAULT_FREQUENCY  50000  // 100 kHz
+#define ESR_DEFAULT_FREQUENCY  20000  // 100 kHz
 
 // Capacitance meter specific hardware config
 #define CAP_R_SERIES             1000.0    // 1k series resistor value

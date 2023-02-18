@@ -159,8 +159,8 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 
 	auto gain = esr::calData.gain;
 
-	auto olvolts = (!gain) ? (sample >> 1) : ( (gain == 1) ? sample : (sample << (gain - 1)) );
-	overload = (olvolts > fp::to(0.95));
+	//auto olvolts = (!gain) ? (sample >> 1) : ( (gain == 1) ? sample : (sample << (gain - 1)) );
+	overload = sample > fp::to(1.7);
 	if (overload)
 	{
 		return INT32_MAX;

@@ -16,17 +16,17 @@
 
 // Pin configuration
 
-#define CAP_OUT       A1  // 7
-#define CAP_RC_DETECT 21   // asdasd
+#define CAP_OUT       A11 // 16
+#define CAP_RC_DETECT 2   // 23
 #define ESR_OUT_11X   A2  // 8
 
-#define ESR_PWM_OUT_LOW      (12)  // 21
-#define ESR_PWM_OUT_HIGH     (13)  // 22
+#define ESR_PWM_OUT_LOW      PAPin(12)  // 21
+#define ESR_PWM_OUT_HIGH     PAPin(13)  // 22
 #define ESR_PWM_FUNCTION     PORT_PMUX_PMUXO_E_Val
 #define ESR_PWM_LOW_CHANNEL  0
 #define ESR_PWM_HIGH_CHANNEL 1
-#define CAP_CHARGE_OUT    1  // asd
-#define CAP_DISCHARGE_OUT 1  // asd
+#define CAP_CHARGE_OUT       PBPin(11)  // PB11, 20
+#define CAP_DISCHARGE_OUT    PBPin(10)  // PB10, 19
 
 #define LED_RED    6  // 29
 #define LED_GREEN  7  // 30

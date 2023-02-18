@@ -21,8 +21,8 @@
  * A3  -> D17  -> PA04 -> ADC4
  * A4  -> D18  -> PA05 -> ADC5
  * A5  -> D19  -> PB02 -> ADC10
- * A6  -> PA06 -> D8 -> ADC6
- * A7  -> PA07 -> D9 -> ADC7
+ * A6  -> D8   -> PA06 -> ADC6
+ * A7  -> D9   -> PA07 -> ADC7
  * A8  -> D4   -> PA08 -> ADC16
  * A9  -> D3   -> PA09 -> ADC17
  * A10 -> D1   -> PA10 -> ADC18

@@ -13,6 +13,10 @@
 		11, 10, 14, 9, -1, 15, 4, 5, 6, 7, 2, 0, 3, 1, 2, 8, 9, 4, 5, 2, 6, 7 \
 	}[x])
 
+#define PAGrp 0
+#define PBGrp (1 << 5)
+#define PAPin(x) (x | PAGrp)
+#define PBPin(x) (x | PBGrp)
 #define PBMask(_x) (1 << ((_x) & 0x1f))
 #define PGrp(_x)   ((_x) >> 5)
 

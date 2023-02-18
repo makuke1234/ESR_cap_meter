@@ -197,6 +197,7 @@ void cap::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)
 	cap::calData.getSample = sampleFunc;
 	cap::calData.setGain   = gainFunc;
 
+	pinMode(CAP_OUT, INPUT);
 	pinMode(CAP_RC_DETECT, INPUT);
 	pinMode(CAP_CHARGE_OUT, OUTPUT);
 	pinMode(CAP_DISCHARGE_OUT, OUTPUT);

@@ -1,12 +1,30 @@
 # ESR+capacitance meter
 
 This is an ATSAMD21G16x based ESR and capacitance meter. Due to program size,
-at least the *16* chip is required (64 KB Flash, 8 KB RAM).
+at least the *16* chip is required (64 KB Flash, 8 KB RAM). The code is written so
+that the meter automatically tests for both capacitance & ESR when a new capacitor
+is connected. This meter can also be used as a low ohmage ohm-meter for resistors &lt;~100 ohms.
+Currently the values are displayed on a 16x2 character display.
+
 
 ## Analog schematic:
 ![schematic](./Schematic/Capacitor%20ESR-meter+capacitance.svg)
 
+
+## TODO
+
+* [ ] _Nice_ schematic
+* [ ] Photos of prototype
+* [ ] (Maybe) utilize a better display in the future like 20x4
+* [ ] Option to calibrate & adjust capacitance measurements
+* [ ] Option to calibrate & adjust ESR measurements semi-automatically
+* [ ] Should measure capacitance at least twice or wait to eliminate any contact bounce issues
+* [ ] Calibration values via USB
+* [ ] Option to save calibration values to flash via USB
+
+
 ## List of supported chips:
+
 * [x] ATSAMD21E16A
 * [x] ATSAMD21E16B
 * [x] ATSAMD21G16A
@@ -61,7 +79,9 @@ at least the *16* chip is required (64 KB Flash, 8 KB RAM).
 * [ ] ATSAML21J18A
 * [ ] ATSAML21J18B
 
+
 ### Future expansion:
+
 * [ ] ATSAMC21E16
 * [ ] ATSAMC21G16
 * [ ] ATSAMC21J16
@@ -90,3 +110,9 @@ at least the *16* chip is required (64 KB Flash, 8 KB RAM).
 * [ ] ATSAMC20G18
 * [ ] ATSAMC20J18
 * [ ] ATSAMC20N18
+
+
+## License
+
+This project uses the MIT license.
+

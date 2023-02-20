@@ -432,8 +432,6 @@ void printInfo(Info type, std::uint8_t decPlaces, bool hasData, float uData)
 		case Info::Temp:
 		case Info::TempAcc:
 			sample = adc::sample(adc::Channel::IntTemp, type == Info::TempAcc);
-			SerialUSB.print("Temp sample: ");
-			SerialUSB.println(sample);
 			data = adc::getTemp(sample);
 			decPlaces = !decPlaces ? 2 : decPlaces;
 			break;

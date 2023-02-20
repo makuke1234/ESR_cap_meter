@@ -13,7 +13,8 @@ std::uint32_t esrcap::autoScaleGetSample(
 )
 {
 	gainFunc(oldgain);
-	auto sample = sampleFunc(precisemode);
+	std::uint32_t sample, avgSample;
+	avgSample = sampleFunc(precisemode, sample);
 
 	std::int32_t gain = (sample < fp::to(0.0625)) ? fp::to(16.0) : fp::div(fp::to(1.0), sample);
 	gain -= fp::to(0.2);
@@ -40,7 +41,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 	{
 		oldgain = gain;
 		gainFunc(oldgain);
-		sample = sampleFunc(precisemode);
+		sampleFunc(precisemode, avgSample);
 	}
 
 	if (gain != 1)
@@ -48,7 +49,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 		gainFunc(1);
 	}
 
-	return sample;
+	return avgSample;
 }
 
 void esr::init(esrcap::sampleFunc_t sampleFunc, esrcap::gainFunc_t gainFunc)

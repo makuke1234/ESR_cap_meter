@@ -73,10 +73,12 @@
 #define ESR_R_OUT              10.0   // 10 ohms
 #define ESR_CAP_BURDEN_VOLTAGE 0.3    // ESR & capacitance measuring burden voltage
 
-#define ESR_DETECTOR_RDIV1 3300.0               // 3.3k
-#define ESR_DETECTOR_RDIV2 (47000.0 + 10000.0)  // 47k + 10k
+#define ESR_DETECTOR_RDIV1     3300.0               // 3.3k
+#define ESR_DETECTOR_RDIV2     (47000.0 + 10000.0)  // 47k + 10k
 
 #define ESR_DEFAULT_FREQUENCY  100000  // 100 kHz
+
+#define ESR_MAX_AVG_SAMPLES    256     // Max number of ADC samples to take when averaging ESR reading
 
 // Capacitance meter specific hardware config
 #define CAP_R_SERIES             1000.0    // 1k series resistor value
@@ -92,9 +94,38 @@ struct State
 	bool btnState:1;
 	bool intOccur:1;
 
+	bool capIsOL:1, capIsInProgress:1, esrIsOL:1;
+	float capValue, esrValue;
+
+	std::uint32_t esrSampleAvgArr[ESR_MAX_AVG_SAMPLES];
+	std::uint64_t esrSampleAvg;
+	std::uint16_t esrSampleIdx;
+	std::uint16_t esrNumSamples;
+
 	constexpr State()
-		: debug(false), btnState(false), intOccur(false)
+		: debug(false), btnState(false), intOccur(false),
+
+		capIsOL(true), capIsInProgress(false), esrIsOL(true),
+		capValue(0.0f), esrValue(0.0f),
+
+		esrSampleAvgArr{}, esrSampleAvg(0ULL),
+		esrSampleIdx(0U), esrNumSamples(0U)
 	{}
+
+	std::uint16_t esrFirstIdx() const volatile
+	{
+		return this->esrFilled() ? this->esrSampleIdx : 0;
+	}
+	bool esrFilled() const volatile
+	{
+		return this->esrNumSamples == ESR_MAX_AVG_SAMPLES;
+	}
+	void esrClear() volatile
+	{
+		this->esrSampleAvg  = 0;
+		this->esrSampleIdx  = 0;
+		this->esrNumSamples = 0;
+	}
 };
 
 // Function declarations
@@ -102,8 +133,8 @@ void btnISR();
 void setrgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 int SerialPrintf(const char * format, ...);
 
-std::uint32_t getSampleInterfaceEsr(bool precisemode);
-std::uint32_t getSampleInterfaceCap(bool precisemode);
+std::uint32_t getSampleInterfaceEsr(bool precisemode, std::uint32_t & instantSample);
+std::uint32_t getSampleInterfaceCap(bool precisemode, std::uint32_t & instantSample);
 void setGainInterface(std::uint8_t gain);
 
 bool comRead(char * buf, std::uint8_t & bufidx);

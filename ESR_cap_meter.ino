@@ -116,8 +116,10 @@ void setup()
 
 void loop()
 {
-	static long last = 0;
+	static long lastDisplayMillis = 0, lastDebugMillis = 0;
+
 	static bool measureCap = false, esrmode = true, capprevmeas = false;
+	static std::uint8_t capConvNum = 0;
 
 	if (state.intOccur)
 	{
@@ -143,8 +145,6 @@ void loop()
 		auto esr = esr::measureESR(ol);
 		ol |= (esr > 100.0) ? true : false;
 
-		disp::lcd.setCursor(0, 1);
-		disp::lcd.print("ESR: ");
 		if (!ol)
 		{
 			if (!capprevmeas)
@@ -153,16 +153,17 @@ void loop()
 
 				esrmode = false;
 				measureCap = false;
+				capConvNum = 0;
 			}
 
-			// Display ESR
-			disp::lcd.print(esr, 3);
-			disp::lcd.print(" ohm     ");
+			state.esrValue = esr;
+			state.esrIsOL = false;
 		}
 		else
 		{
-			disp::lcd.print("OL        ");
+			state.esrIsOL = true;
 			capprevmeas = false;
+			state.esrClear();
 		}
 	}
 	if (!esrmode)
@@ -172,6 +173,8 @@ void loop()
 		if (!measureCap)
 		{
 			// Check if capacitor is discharged
+			state.capIsInProgress = true;
+			state.capIsOL = false;
 			if (cap::isDischarged())
 			{
 				cap::startMeasureMent_async();
@@ -180,9 +183,6 @@ void loop()
 			else
 			{
 				cap::discharge();
-				disp::lcd.setCursor(0, 0);
-				disp::lcd.print("Cap: ");
-				disp::lcd.print("discharging");
 			}
 		}
 		else
@@ -193,69 +193,41 @@ void loop()
 				auto cap = cap::calcCapacitance_fpd(ticks);
 				auto fcap = double(cap) / 1000.0;
 				fcap = (fcap < 0.0) ? 0.0 : fcap;
+				state.capValue = fcap;
+				state.capIsOL = false;
+				state.capIsInProgress = false;
 
-				std::uint8_t range;
-				if (fcap > 999999999.9)
+				++capConvNum;
+
+				if ((fcap > 10.0) || (capConvNum > 1))
 				{
-					range = 4;
-					fcap /= 1000000000.0;
-				}
-				if (fcap > 999999.9)
-				{
-					range = 3;
-					fcap /= 1000000.0;
-				}
-				else if (fcap > 999.9)
-				{
-					range = 2;
-					fcap /= 1000.0;
-				}
-				else if (fcap > 0.999)
-				{
-					range = 1;
+					ticks = 0;
 				}
 				else
 				{
-					range = 0;
-					fcap *= 1000.0;
+					measureCap = false;
 				}
-
-				fcap += 0.05;
-
-				disp::lcd.setCursor(0, 0);
-				disp::lcd.print("Cap: ");
-				disp::lcd.print(fcap, 0);
-
-				static const char * ranges[] = {
-					" pF",
-					" nF",
-					" uF",
-					" mF",
-					" F"
-				};
-
-				disp::lcd.print(ranges[range]);
-				disp::lcd.print("       ");
-
-				capprevmeas = true;
-				measureCap = false;
-				esrmode = true;
-				cap::stop();
 			}
 			else if (TC4->COUNT32.COUNT.reg > CAP_TIMEOUT_TICKS)
+			{
+				state.capIsOL = true;
+				state.capIsInProgress = false;
+				ticks = 0;
+			}
+
+			if (!ticks)
 			{
 				capprevmeas = true;
 				measureCap = false;
 				esrmode = true;
 				cap::stop();
-				disp::lcd.setCursor(0, 0);
-				disp::lcd.print("Cap: OL         ");
 			}
 		}
 	}
 
-	if (state.debug)
+	if (state.debug && (millis() > lastDebugMillis))
 	{
+		lastDebugMillis = millis() + 1000;
 		//const auto tempSample = adc::sample(adc::Channel::IntTemp, true);
 		//adc::calibrate(tempSample, true);
 		printInfo(Info::TempAcc);
@@ -272,14 +244,77 @@ void loop()
 		communicationLoop();
 	}
 
-	while (!state.intOccur && ((millis() - last) < 250))
+	// Update display every 250ms
+	if (millis() > lastDisplayMillis)
 	{
-		/*if (!digitalRead(PUSH_BTN)/* || (heartbeat::isConnected() && Serial.available()))
+		lastDisplayMillis = millis() + 250;
+
+		disp::lcd.setCursor(0, 0);
+		if (state.capIsOL || state.capIsInProgress)
 		{
-			break;
-		}*/
+			disp::lcd.print(state.capIsOL ? "Cap: OL      " : "Cap: charging");
+		}
+		else
+		{
+			// Show conversion result
+			auto fcap = state.capValue;
+			disp::lcd.print("Cap: ");
+
+			std::uint8_t range;
+			if (fcap > 999999999.9)
+			{
+				range = 4;
+				fcap /= 1000000000.0;
+			}
+			if (fcap > 999999.9)
+			{
+				range = 3;
+				fcap /= 1000000.0;
+			}
+			else if (fcap > 999.9)
+			{
+				range = 2;
+				fcap /= 1000.0;
+			}
+			else if (fcap > 0.999)
+			{
+				range = 1;
+			}
+			else
+			{
+				range = 0;
+				fcap *= 1000.0;
+			}
+
+			fcap += 0.05;
+
+			disp::lcd.print(fcap, 0);
+
+			static const char * ranges[] = {
+				" pF",
+				" nF",
+				" uF",
+				" mF",
+				" F"
+			};
+
+			disp::lcd.print(ranges[range]);
+			disp::lcd.print("       ");
+		}
+
+		disp::lcd.setCursor(0, 1);
+		if (state.esrIsOL)
+		{
+			disp::lcd.print("ESR: OL         ");
+		}
+		else
+		{
+			// Show conversion result
+			disp::lcd.print("ESR: ");
+			disp::lcd.print(state.esrValue, 3);
+			disp::lcd.print(" ohm  ");
+		}
 	}
-	last = millis();
 }
 
 
@@ -321,13 +356,23 @@ int SerialPrintf(const char * format, ...)
 	return nchars;
 }
 
-std::uint32_t getSampleInterfaceEsr(bool precisemode)
+std::uint32_t getSampleInterfaceEsr(bool precisemode, std::uint32_t & instantSample)
 {
-	return adc::getVolts_fpd(adc::sample(adc::Channel::OutAmp, precisemode));
+	const auto volts = adc::getVolts_fpd(adc::sample(adc::Channel::OutAmp, precisemode));
+	instantSample = volts;
+	state.esrSampleAvg -= state.esrFilled() ? state.esrSampleAvgArr[state.esrFirstIdx()] : 0;
+	state.esrSampleAvg += volts;
+	state.esrSampleAvgArr[state.esrSampleIdx] = volts;
+	state.esrSampleIdx = ((state.esrSampleIdx + 1) < ESR_MAX_AVG_SAMPLES) ? (state.esrSampleIdx + 1) : 0;
+	state.esrNumSamples += (state.esrNumSamples < ESR_MAX_AVG_SAMPLES) ? 1 : 0;
+
+	return state.esrSampleAvg / state.esrNumSamples;
 }
-std::uint32_t getSampleInterfaceCap(bool precisemode)
+std::uint32_t getSampleInterfaceCap(bool precisemode, std::uint32_t & instantSample)
 {
-	return adc::getVolts_fpd(adc::sample(adc::Channel::Out, precisemode));
+	const auto volts = adc::getVolts_fpd(adc::sample(adc::Channel::Out, precisemode));
+	instantSample = volts;
+	return volts;
 }
 void setGainInterface(std::uint8_t gain)
 {

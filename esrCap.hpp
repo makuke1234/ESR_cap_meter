@@ -10,7 +10,7 @@
 
 namespace esrcap
 {
-	using sampleFunc_t = std::uint32_t (*)(bool precisemode);
+	using sampleFunc_t = std::uint32_t (*)(bool precisemode, std::uint32_t & instantSample);
 	using gainFunc_t   = void (*)(std::uint8_t gain);
 
 	std::uint32_t autoScaleGetSample(

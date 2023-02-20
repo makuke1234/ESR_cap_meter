@@ -433,11 +433,6 @@ float adc::getVolts(std::uint16_t sample)
 }
 std::uint32_t adc::getVolts_fpd(std::uint16_t sample)
 {
-	/*float maxCounts = float(ADC_MAX_COUNTS);
-	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
-	{
-		maxCounts *= adc::calData.gainCal[adc::calData.gainIdx];
-	}*/
 	std::uint32_t maxCounts = ADC_MAX_COUNTS << 15;
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
 	{

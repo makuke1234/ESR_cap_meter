@@ -15,7 +15,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 	gainFunc(oldgain);
 	auto sample = sampleFunc(precisemode);
 
-	std::int32_t gain = fp::div(fp::to(1.0), !sample ? 1 : sample);
+	std::int32_t gain = (sample < fp::to(0.0625)) ? fp::to(16.0) : fp::div(fp::to(1.0), sample);
 	gain -= fp::to(0.2);
 
 	if (gain < fp::to(1.0))
@@ -45,7 +45,7 @@ std::uint32_t esrcap::autoScaleGetSample(
 
 	if (gain != 1)
 	{
-		gainFunc(gain);
+		gainFunc(1);
 	}
 
 	return sample;
@@ -157,20 +157,20 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 	auto offset = esr::calData.adcOffsetVolts_FPD[esr::calData.gain];
 	sample -= offset;
 
-	auto gain = esr::calData.gain;
+	overload = sample > fp::to(1.85);
+	// Remove amplifier offset to the input voltage
+	sample -= fp::to(ESR_AMP_OFFSET);
+	overload |= sample > fp::to(1.7);
+	
+	SerialUSB.print("Sample: ");
+	SerialUSB.print(sample);
+	SerialUSB.print("; Voltage: ");
+	SerialUSB.println(fp::fromD(sample), 4);
 
-	//auto olvolts = (!gain) ? (sample >> 1) : ( (gain == 1) ? sample : (sample << (gain - 1)) );
-	overload = sample > fp::to(1.7);
 	if (overload)
 	{
 		return INT32_MAX;
 	}
-
-
-	// Remove amplifier offset to the input voltage
-	sample -= fp::to(ESR_AMP_OFFSET);
-	SerialUSB.print("Voltage: ");
-	SerialUSB.println(fp::fromD(sample), 4);
 
 	return esr::calcESR_fpd(sample);
 }

@@ -152,7 +152,7 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 		esr::calData.getSample,
 		esr::calData.setGain,
 		const_cast<std::uint8_t &>(esr::calData.gain),
-		true
+		false
 	);
 	auto offset = esr::calData.adcOffsetVolts_FPD[esr::calData.gain];
 	sample = (offset > sample) ? 0 : sample - offset;

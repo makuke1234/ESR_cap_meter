@@ -95,7 +95,7 @@ struct State
 	bool intOccur:1;
 
 	bool capIsOL:1, capIsInProgress:1, esrIsOL:1;
-	float capValue, esrValue;
+	double capValue, esrValue;
 
 	std::uint32_t esrSampleAvgArr[ESR_MAX_AVG_SAMPLES];
 	std::uint64_t esrSampleAvg;
@@ -106,7 +106,7 @@ struct State
 		: debug(false), btnState(false), intOccur(false),
 
 		capIsOL(true), capIsInProgress(false), esrIsOL(true),
-		capValue(0.0f), esrValue(0.0f),
+		capValue(0.0), esrValue(0.0),
 
 		esrSampleAvgArr{}, esrSampleAvg(0ULL),
 		esrSampleIdx(0U), esrNumSamples(0U)

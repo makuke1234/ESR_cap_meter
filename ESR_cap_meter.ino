@@ -116,9 +116,9 @@ void setup()
 
 void loop()
 {
-	static long lastDisplayMillis = 0, lastDebugMillis = 0;
+	static long lastDisplayMillis = 0, lastDebugMillis = 0, lastCapMillis = 0;
 
-	static bool measureCap = false, esrmode = true, capprevmeas = false;
+	static bool esrmode = true, capprevmeas = false;
 	static std::uint8_t capConvNum = 0;
 
 	if (state.intOccur)
@@ -152,8 +152,9 @@ void loop()
 				esr::outputEnable(false);
 
 				esrmode = false;
-				measureCap = false;
+				state.capIsInProgress = false;
 				capConvNum = 0;
+				lastCapMillis = 0;
 			}
 
 			state.esrValue = esr;
@@ -169,23 +170,22 @@ void loop()
 	if (!esrmode)
 	{
 		// Measure capacitance
-
-		if (!measureCap)
+		if (!state.capIsInProgress && (millis() > lastCapMillis))
 		{
 			// Check if capacitor is discharged
-			state.capIsInProgress = true;
-			state.capIsOL = false;
 			if (cap::isDischarged())
 			{
 				cap::startMeasureMent_async();
-				measureCap = true;
+				state.capIsInProgress = true;
+				state.capIsOL = false;
 			}
 			else
 			{
 				cap::discharge();
+				state.capIsOL = true;
 			}
 		}
-		else
+		else if (state.capIsInProgress)
 		{
 			std::uint32_t ticks;
 			if (cap::measureTicks_async(ticks))
@@ -201,24 +201,26 @@ void loop()
 
 				if ((fcap > 10.0) || (capConvNum > 1))
 				{
+					// No contact bouncing issues if over 10nF or
+					// already done the second measurement
 					ticks = 0;
 				}
 				else
 				{
-					measureCap = false;
+					lastCapMillis = millis() + 100;
+					ticks = 1;
 				}
 			}
 			else if (TC4->COUNT32.COUNT.reg > CAP_TIMEOUT_TICKS)
 			{
 				state.capIsOL = true;
-				state.capIsInProgress = false;
 				ticks = 0;
 			}
 
 			if (!ticks)
 			{
 				capprevmeas = true;
-				measureCap = false;
+				state.capIsInProgress = false;
 				esrmode = true;
 				cap::stop();
 			}
@@ -286,9 +288,7 @@ void loop()
 				fcap *= 1000.0;
 			}
 
-			fcap += 0.05;
-
-			disp::lcd.print(fcap, 0);
+			disp::lcd.print(fcap, (range == 0) ? 0 : 1);
 
 			static const char * ranges[] = {
 				" pF",

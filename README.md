@@ -11,14 +11,16 @@ Currently the values are displayed on a 16x2 character display.
 ![schematic](./Schematic/Capacitor%20ESR-meter+capacitance.svg)
 
 
-## TODO
+## Features (with TODO)
 
+* [x] Automatic capacitance & ESR measurement
+* [x] ESR measurement averaging
+* [x] Measure capacitance at least twice (waits in between) to eliminate any contact bounce issues
 * [ ] _Nice_ schematic
 * [ ] Photos of prototype
 * [ ] (Maybe) utilize a better display in the future like 20x4
 * [ ] Option to calibrate & adjust capacitance measurements
 * [ ] Option to calibrate & adjust ESR measurements semi-automatically
-* [ ] Should measure capacitance at least twice or wait to eliminate any contact bounce issues
 * [ ] Calibration values via USB
 * [ ] Option to save calibration values to flash via USB
 

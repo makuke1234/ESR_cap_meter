@@ -14,7 +14,7 @@ Currently the values are displayed on a 16x2 character display.
 ## Features
 
 * [x] Automatic capacitance & ESR measurement
-* [x] ESR measurement averaging
+* [x] ESR measurement averaging with up to 1024x256=262144 samples, 1024 samples guaranteed
 * [x] Measure capacitance at least twice (waits in between) to eliminate any contact bounce issues
 
 

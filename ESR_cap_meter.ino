@@ -156,9 +156,11 @@ void loop()
 				capConvNum = 0;
 				lastCapMillis = 0;
 			}
-
-			state.esrValue = esr;
-			state.esrIsOL = false;
+			else
+			{
+				state.esrValue = esr;
+				state.esrIsOL = false;
+			}
 		}
 		else
 		{
@@ -188,6 +190,7 @@ void loop()
 		else if (state.capIsInProgress)
 		{
 			std::uint32_t ticks;
+			bool done = false;
 			if (cap::measureTicks_async(ticks))
 			{
 				auto cap = cap::calcCapacitance_fpd(ticks);
@@ -203,21 +206,20 @@ void loop()
 				{
 					// No contact bouncing issues if over 10nF or
 					// already done the second measurement
-					ticks = 0;
+					done = true;
 				}
 				else
 				{
 					lastCapMillis = millis() + 100;
-					ticks = 1;
 				}
 			}
 			else if (TC4->COUNT32.COUNT.reg > CAP_TIMEOUT_TICKS)
 			{
 				state.capIsOL = true;
-				ticks = 0;
+				done = true;
 			}
 
-			if (!ticks)
+			if (done)
 			{
 				capprevmeas = true;
 				state.capIsInProgress = false;

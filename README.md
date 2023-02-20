@@ -11,11 +11,15 @@ Currently the values are displayed on a 16x2 character display.
 ![schematic](./Schematic/Capacitor%20ESR-meter+capacitance.svg)
 
 
-## Features (with TODO)
+## Features
 
 * [x] Automatic capacitance & ESR measurement
 * [x] ESR measurement averaging
 * [x] Measure capacitance at least twice (waits in between) to eliminate any contact bounce issues
+
+
+### TODO
+
 * [ ] _Nice_ schematic
 * [ ] Photos of prototype
 * [ ] (Maybe) utilize a better display in the future like 20x4

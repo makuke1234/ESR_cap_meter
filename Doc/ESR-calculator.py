@@ -15,16 +15,16 @@ adcres -> adc resolution in bits
 '''
 
 vBurden = 0.3
-gain = 11
+gain = 10.2
 rout = 10
-freq = 100000
+freq = 20000
 gr1 = 3.3
 gr2 = 47+10
-vOffset = -0.4
+vOffset = 0.0
 outOffset = 0.0
 
 vref = 1.0
-adcres = 12
+adcres = 16
 
 import math
 
@@ -61,7 +61,7 @@ def calcESR(volts):
 #counts = int(input("Enter counts: "))
 #volts = calcvolts(counts)
 volts = float(input("Enter voltage: "))
-volts += vOffset
+volts -= vOffset
 esr = calcESR(volts)
 mohms = abs(esr) < 1
 esr = round(esr, 4)

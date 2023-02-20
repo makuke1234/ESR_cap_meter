@@ -68,15 +68,15 @@
 #define ADC_CLK_DIV              ADC_CTRLB_PRESCALER_DIV8   // 1 Mhz normal ADC clock
 
 
-#define ESR_AMP_GAIN           11.0  // Gain resistors 33k & 3.3k
-#define ESR_AMP_OFFSET         0.0   // Amplifier output voltage offset
-#define ESR_R_OUT              10.0  // 10 ohms
-#define ESR_CAP_BURDEN_VOLTAGE 0.3   // ESR & capacitance measuring burden voltage
+#define ESR_AMP_GAIN           10.2   // Gain resistors 33k & 3.3k
+#define ESR_AMP_OFFSET         0.081  // Amplifier output voltage offset
+#define ESR_R_OUT              10.0   // 10 ohms
+#define ESR_CAP_BURDEN_VOLTAGE 0.3    // ESR & capacitance measuring burden voltage
 
 #define ESR_DETECTOR_RDIV1 3300.0               // 3.3k
 #define ESR_DETECTOR_RDIV2 (47000.0 + 10000.0)  // 47k + 10k
 
-#define ESR_DEFAULT_FREQUENCY  20000  // 100 kHz
+#define ESR_DEFAULT_FREQUENCY  100000  // 100 kHz
 
 // Capacitance meter specific hardware config
 #define CAP_R_SERIES             1000.0    // 1k series resistor value

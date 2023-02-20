@@ -433,14 +433,18 @@ float adc::getVolts(std::uint16_t sample)
 }
 std::uint32_t adc::getVolts_fpd(std::uint16_t sample)
 {
-	std::uint32_t maxCounts = ADC_MAX_COUNTS << 15;
+	std::uint32_t maxCounts = ADC_MAX_COUNTS << 11;
 	if (adc::Gain(adc::calData.gainIdx) != adc::Gain::g1x)
 	{
 		std::uint32_t gainFPD = adc::calData.gainCal_FPD[adc::calData.gainIdx];
-		maxCounts = fp::mul(maxCounts, gainFPD);		
+		maxCounts = fp::mul(maxCounts, gainFPD);
 	}
+	/*SerialUSB.print("Sample: ");
+	SerialUSB.print(sample);
+	SerialUSB.print("; Max counts: ");
+	SerialUSB.println(maxCounts >> 11);*/
 
-	std::uint32_t volts = fp::muldiv(adc::calData.ref1VReal_FPD, sample << 15, maxCounts);
+	std::uint32_t volts = fp::muldiv(adc::calData.ref1VReal_FPD, sample << 11, maxCounts);
 
 	return volts;
 }

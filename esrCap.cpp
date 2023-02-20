@@ -155,16 +155,14 @@ std::int32_t esr::measureESR_fpd(bool & overload)
 		true
 	);
 	auto offset = esr::calData.adcOffsetVolts_FPD[esr::calData.gain];
-	sample -= offset;
+	sample = (offset > sample) ? 0 : sample - offset;
 
 	overload = sample > fp::to(1.85);
 	// Remove amplifier offset to the input voltage
 	sample -= fp::to(ESR_AMP_OFFSET);
 	overload |= sample > fp::to(1.7);
 	
-	SerialUSB.print("Sample: ");
-	SerialUSB.print(sample);
-	SerialUSB.print("; Voltage: ");
+	SerialUSB.print("Voltage: ");
 	SerialUSB.println(fp::fromD(sample), 4);
 
 	if (overload)

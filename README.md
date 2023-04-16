@@ -20,7 +20,7 @@ Currently the values are displayed on a 16x2 character display.
 
 ### TODO
 
-* [ ] _Nice_ schematic
+* [x] _Nice_ schematic
 * [ ] Photos of prototype
 * [ ] (Maybe) utilize a better display in the future like 20x4
 * [ ] Option to calibrate & adjust capacitance measurements
